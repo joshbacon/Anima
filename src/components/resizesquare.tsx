@@ -1,0 +1,1 @@
+// put this in the bottom corner of each component when snap to grid is off to handle resize functionality
