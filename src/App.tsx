@@ -9,9 +9,14 @@ import Heardle from './components/heardle';
 import Stats from './components/stats';
 import Settings from './components/settings';
 
+import SignIn from './components/signin';
+
 
 function App() {
-  return <div className='w-screen h-screen min-w-fit min-h-fit overflow-auto inline-grid place-items-center gap-3 grid-cols-6 grid-rows-6 p-3'>
+
+  const [signedIn, setSignedIn] = useState<boolean>(false);
+
+  return <div className='w-screen h-screen min-w-fit min-h-fit overflow-auto inline-grid place-items-center gap-3 grid-cols-6 grid-rows-6 p-3 font-main'>
     <Player />
     <Queue />
     <Playlist />
@@ -20,6 +25,8 @@ function App() {
     <Lyrics />
     <Heardle />
     <Stats />
+
+    { !signedIn ? <SignIn /> : null }
   </div>
 }
 

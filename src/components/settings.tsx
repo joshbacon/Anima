@@ -15,8 +15,12 @@
 // snap-to-grid OFF
 // idk honestly
 
+
+// have an option to set the cards to glass or other colors
+// have different background colors too (also upload pictures???)
+
 function Settings() {
-    return <div className='w-full h-full min-w-fit min-h-fit row-span-3 bg-slate-500 rounded-2xl'>
+    return <div className='w-full h-full min-w-fit min-h-fit row-span-3 bg-indigo-800 rounded-2xl'>
         settings
     </div>
 }
