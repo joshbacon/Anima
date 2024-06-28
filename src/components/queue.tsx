@@ -1,58 +1,39 @@
 import { useState } from 'react';
 
+import remove from '../assets/playlist_remove.svg';
+
+function queueItem(key:number) {
+    return <li key={key} className='flex justify-between items-center gap-2 w-full p-2 rounded-lg bg-slate-700'>
+        <div>
+            <h2 className='text-lg'>Hallelujah</h2>
+            <h3>Jeff Buckley</h3>
+        </div>
+        <button className='rounded-full'>
+            <img src={remove} alt="remove from queue" className='w-7' />
+        </button>
+    </li>
+}
+
 // make this a child of the draggable class
 function Queue() {
 
-    // make these drag and droppable within itself (reorder the queue)
-    // - do it internally because it's local functionality
-    return <div className='w-full h-full min-w-fit min-h-fit row-span-4 bg-indigo-800 rounded-2xl'>
-        <h2>Up Next</h2>
-        <ul>
-            <li className='w-full border-b-2'>
-                <div className='flex justify-between'>
-                    <h2>Title</h2>
-                    <p>remove</p>
-                </div>
-                <div className='flex justify-between'>
-                    <h3>artist</h3>
-                </div>
-            </li>
-            <li className='w-full border-b-2'>
-                <div className='flex justify-between'>
-                    <h2>Title</h2>
-                    <p>remove</p>
-                </div>
-                <div className='flex justify-between'>
-                    <h3>artist</h3>
-                </div>
-            </li>
-            <li className='w-full border-b-2'>
-                <div className='flex justify-between'>
-                    <h2>Title</h2>
-                    <p>remove</p>
-                </div>
-                <div className='flex justify-between'>
-                    <h3>artist</h3>
-                </div>
-            </li>
-            <li className='w-full border-b-2'>
-                <div className='flex justify-between'>
-                    <h2>Title</h2>
-                    <p>remove</p>
-                </div>
-                <div className='flex justify-between'>
-                    <h3>artist</h3>
-                </div>
-            </li>
-            <li className='w-full border-b-2'>
-                <div className='flex justify-between'>
-                    <h2>Title</h2>
-                    <p>remove</p>
-                </div>
-                <div className='flex justify-between'>
-                    <h3>artist</h3>
-                </div>
-            </li>
+    let tempList = [
+        queueItem(1),
+        queueItem(2), 
+        queueItem(3),
+        queueItem(4), 
+        queueItem(5),
+        queueItem(6), 
+        queueItem(7),
+        queueItem(8), 
+        queueItem(9),
+        queueItem(10)
+    ];
+
+    return <div className='w-full h-full min-w-fit min-h-fit col-span-1 row-span-4 p-3 bg-indigo-800 rounded-2xl overflow-hidden'>
+        <h2 className='pb-3'>Up Next</h2>
+        <ul className='flex flex-col gap-1 h-full overflow-y-scroll'>
+            {tempList.map(e => {return e;})}
         </ul>
     </div>
 }

@@ -4,12 +4,22 @@
 
 import { useState } from 'react';
 
-function SignIn() {
+interface signInProps {
+    passLoginResult: (value:boolean) => void;
+}
+
+function SignIn({passLoginResult}: signInProps) {
 
     const [showingPassword, setShowingPassword] = useState<boolean>(false);
 
     function handleLogin() {
+        let loginError:boolean = false;
 
+        if (loginError) {
+            passLoginResult(false);
+        } else {
+            passLoginResult(true);
+        }
     }
 
     return <div className="absolute top-0 left-0 z-50 w-screen h-screen bg-zinc-900 grid place-items-center">

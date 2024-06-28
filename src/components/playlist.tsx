@@ -1,10 +1,41 @@
 import { useState } from 'react';
 
+import info from '../assets/info.svg';
+import album from '../assets/album.svg';
+
+
+function playlistItem(key:number) {
+    return <li key={key} className='flex justify-start items-center gap-2 w-full p-2 rounded-lg bg-slate-700'>
+        <img src={album} alt="" />
+        <div>
+            <h2 className='text-lg'>Best of</h2>
+            <h3>237 songs</h3>
+        </div>
+        <img src={info} alt=""  className='ml-auto'/>
+    </li>
+}
+
 // make this a child of the draggable class
 function Playlist() {
 
-    return <div className='w-full h-full min-w-fit min-h-fit col-span-2 row-span-4 bg-indigo-800 rounded-2xl'>
-        <h2>Playlist</h2>
+    let tempList = [
+        playlistItem(1),
+        playlistItem(2), 
+        playlistItem(3),
+        playlistItem(4), 
+        playlistItem(5),
+        playlistItem(6), 
+        playlistItem(7),
+        playlistItem(8), 
+        playlistItem(9),
+        playlistItem(10)
+    ];
+
+    return <div className='w-full h-full min-w-fit min-h-fit col-span-2 row-span-4 p-3 bg-indigo-800 rounded-2xl overflow-hidden'>
+        <h2 className='pb-3'>Playlist</h2>
+        <ul className='flex flex-col gap-1 w-full h-full overflow-y-scroll'>
+            {tempList.map((e) => {return e})}
+        </ul>
     </div>
 }
 
