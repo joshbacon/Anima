@@ -25,10 +25,10 @@ function Player() {
         
     }
 
-    return <div className='flex justify-evenly items-center gap-5 w-full h-full min-w-fit min-h-fit col-span-3 bg-indigo-800 rounded-2xl'>
+    return <div key="Player" className='flex justify-evenly items-center gap-5 w-full h-full min-w-fit min-h-fit col-span-3 bg-indigo-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl'>
         <div className='flex'>
             <div className='flex flex-col'>
-                <h2>Hallelujah</h2>
+                <h2 className='text-xl'>Hallelujah</h2>
                 <h2>Jeff Buckley</h2>
             </div>
         </div>
@@ -49,7 +49,7 @@ function Player() {
                 </button>
             </div>
             <div className='col-span-3 w-full h-3 bg-slate-50 rounded-lg'>
-                <div className={`bg-slate-800 h-full rounded-lg w-[${(timePlaying/songLength*100).toFixed(0)}%]`} />
+                <div className={`bg-eigen-light h-full rounded-lg w-[${(timePlaying/songLength*100).toFixed(0)}%]`} />
             </div>
         </div>
         <div className='flex gap-2'>

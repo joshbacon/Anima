@@ -5,7 +5,7 @@ import album from '../assets/album.svg';
 
 
 function playlistItem(key:number) {
-    return <li key={key} className='flex justify-start items-center gap-2 w-full p-2 rounded-lg bg-slate-700'>
+    return <li key={key} className='flex justify-start items-center gap-2 w-full p-2 rounded-lg bg-eigen-light'>
         <img src={album} alt="" />
         <div>
             <h2 className='text-lg'>Best of</h2>
@@ -31,8 +31,8 @@ function Playlist() {
         playlistItem(10)
     ];
 
-    return <div className='w-full h-full min-w-fit min-h-fit col-span-2 row-span-4 p-3 bg-indigo-800 rounded-2xl overflow-hidden'>
-        <h2 className='pb-3'>Playlist</h2>
+    return <div key="Playlist" className='w-full h-full min-w-fit min-h-fit col-span-2 row-span-4 p-3 bg-indigo-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden'>
+        <h2 className='pb-3 text-xl'>Playlist</h2>
         <ul className='flex flex-col gap-1 w-full h-full overflow-y-scroll'>
             {tempList.map((e) => {return e})}
         </ul>

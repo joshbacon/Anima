@@ -8,7 +8,7 @@ import favourite_selected from '../assets/favourite_selected.svg';
 
 
 function searchItem(key:number, callback:any) {
-    return <li key={key} className='flex gap-2 w-full p-2 rounded-lg bg-slate-700' onClick={() => callback(true)}>
+    return <li key={key} className='flex gap-2 w-full p-2 rounded-lg bg-eigen-light' onClick={() => callback(true)}>
         <img src={album} alt="album cover" />
         <div className='w-full'>
             <div className='flex justify-between'>
@@ -45,7 +45,7 @@ function Search() {
         searchItem(6, setSelectedSong)
     ];
 
-    return <div className='w-full h-full min-w-fit min-h-fit col-span-2 row-span-3 p-3 bg-indigo-800 rounded-2xl overflow-hidden'>
+    return <div key="Search" className='w-full h-full min-w-fit min-h-fit col-span-2 row-span-3 p-3 bg-indigo-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden'>
         <input
             type="text"
             placeholder='search...'

@@ -22,7 +22,7 @@ function SignIn({passLoginResult}: signInProps) {
         }
     }
 
-    return <div className="absolute top-0 left-0 z-50 w-screen h-screen bg-zinc-900 grid place-items-center">
+    return <div className="absolute top-0 left-0 z-50 w-screen h-screen bg-eigen grid place-items-center">
         <div className='z-0 absolute w-64 aspect-square rounded-full drop-shadow-circle bg-sky-500 animate-wriggle1' />
         <div className='z-0 absolute w-32 aspect-square rounded-full drop-shadow-circle bg-sky-500 animate-wriggle2' />
         <div className='z-0 absolute w-44 aspect-square rounded-full drop-shadow-circle bg-sky-500 animate-wriggle3' />
@@ -53,12 +53,15 @@ function SignIn({passLoginResult}: signInProps) {
                     </button>
                 </div>
             </div>
-            <button
-                onClick={handleLogin}
-                className='w-4/5 h-16 text-lg font-semibold bg-indigo-700 rounded-md'
-            >
-                Log In
-            </button>
+            <div className='flex flex-col justify-center items-center gap-3 w-full'>
+                <p>*use your spotify credentials to login</p>
+                <button
+                    onClick={handleLogin}
+                    className='w-4/5 h-16 text-lg font-semibold bg-indigo-700 rounded-md'
+                >
+                    Log In
+                </button>
+            </div>
         </div>
     </div>
 }

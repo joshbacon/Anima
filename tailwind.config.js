@@ -6,6 +6,10 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        'eigen': '#16161d',
+        'eigen-light': '#26262d',
+      },
       fontFamily: {
         'main': ["Kanit", "sans-serif"],
       },
