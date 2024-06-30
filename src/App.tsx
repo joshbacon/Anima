@@ -20,7 +20,7 @@ interface Component {
 
 function App() {
 
-  const [signedIn, setSignedIn] = useState<boolean>(false);
+  const [signedIn, setSignedIn] = useState<boolean>(true);
 
   const [componentList, setComponentList] = useState<Component[]>([
     // TODO: get rid of this whole callback thing when redux is added, just have the components each update the store individually

@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
+
 import play from '../assets/play.svg';
 import pause from '../assets/pause.svg';
 import previous from '../assets/previous.svg';
@@ -9,6 +12,9 @@ import mute from '../assets/mute.svg';
 
 // make this a child of the draggable class
 function Player() {
+
+    const color = useSelector((state: RootState) => state.settings.color);
+    console.log(color);
 
     const [playing, setPlaying] = useState<boolean>(false);
     const [currVolume, setCurrVolume] = useState<number>(50);
@@ -25,7 +31,7 @@ function Player() {
         
     }
 
-    return <div key="Player" className='flex justify-evenly items-center gap-5 w-full h-full min-w-fit min-h-fit col-span-3 bg-indigo-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl'>
+    return <div key="Player" className={`flex justify-evenly items-center gap-5 w-full h-full min-w-fit min-h-fit col-span-3 bg-${color}-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl`}>
         <div className='flex'>
             <div className='flex flex-col'>
                 <h2 className='text-xl'>Hallelujah</h2>

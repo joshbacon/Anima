@@ -20,6 +20,9 @@
 // have different background colors too (also upload pictures???)
 
 import { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { RootState } from "../state/store";
+import { changeColor } from "../state/settingsSlice";
 
 interface Props {
     snapToGrid: boolean;
@@ -28,19 +31,23 @@ interface Props {
 
 function Settings({snapToGrid, updateCallback}: Props) {
 
+    
+    const color = useSelector((state: RootState) => state.settings.color);
+    const dispatch = useDispatch();
+
     const [snapping, setSnapping] = useState<boolean>(snapToGrid);
 
     function updateOpenList(id:string, value:boolean) {
         updateCallback(id, value);
     }
 
-    return <div key="Settings" className='flex flex-col gap-2 w-full h-full min-w-fit min-h-fit row-span-3 p-3 bg-pink-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll'>
+    return <div key="Settings" className={`flex flex-col gap-2 w-full h-full min-w-fit min-h-fit row-span-3 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll`}>
         <h2 className="text-xl">
             Settings
         </h2>
         <div className="flex justify-center items-center gap-2 text-center">
             <button
-                className='w-full h-full py-1 text-lg font-semibold bg-pink-700 rounded-md'
+                className={`w-full h-full py-1 text-lg font-semibold bg-${color}-700 rounded-md`}
                 onClick={() => setSnapping(!snapping)}
             >
                 <h2>{snapping ? "Snap to Grid" : "Free Form"}</h2>
@@ -50,14 +57,14 @@ function Settings({snapToGrid, updateCallback}: Props) {
         <div className="p-2 rounded-lg hover:bg-eigen hover:bg-opacity-30">
             <h2 className="mb-2">Color Scheme</h2>
             <div className="flex justify-start items-center gap-2 flex-wrap">
-                <div className="w-5 aspect-square cursor-pointer bg-red-600 rounded-md"/>
-                <div className="w-5 aspect-square cursor-pointer bg-orange-600 rounded-md"/>
-                <div className="w-5 aspect-square cursor-pointer bg-yellow-600 rounded-md"/>
-                <div className="w-5 aspect-square cursor-pointer bg-green-600 rounded-md"/>
-                <div className="w-5 aspect-square cursor-pointer bg-sky-600 rounded-md"/>
-                <div className="w-5 aspect-square cursor-pointer bg-blue-600 rounded-md"/>
-                <div className="w-5 aspect-square cursor-pointer bg-purple-600 rounded-md"/>
-                <div className="w-5 aspect-square cursor-pointer bg-pink-600 rounded-md"/>
+                <button onClick={() => dispatch(changeColor("red"))} className="w-5 aspect-square cursor-pointer bg-red-600 rounded-md"/>
+                <button onClick={() => dispatch(changeColor("orange"))} className="w-5 aspect-square cursor-pointer bg-orange-600 rounded-md"/>
+                <button onClick={() => dispatch(changeColor("yellow"))} className="w-5 aspect-square cursor-pointer bg-yellow-600 rounded-md"/>
+                <button onClick={() => dispatch(changeColor("green"))} className="w-5 aspect-square cursor-pointer bg-green-600 rounded-md"/>
+                <button onClick={() => dispatch(changeColor("sky"))} className="w-5 aspect-square cursor-pointer bg-sky-600 rounded-md"/>
+                <button onClick={() => dispatch(changeColor("blue"))} className="w-5 aspect-square cursor-pointer bg-blue-600 rounded-md"/>
+                <button onClick={() => dispatch(changeColor("purple"))} className="w-5 aspect-square cursor-pointer bg-purple-600 rounded-md"/>
+                <button onClick={() => dispatch(changeColor("pink"))} className="w-5 aspect-square cursor-pointer bg-pink-600 rounded-md"/>
             </div>
         </div>
 

@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
+
 import info from '../assets/info.svg';
 import album from '../assets/album.svg';
 import playlist_add from '../assets/playlist_add.svg';
@@ -27,6 +30,8 @@ function searchItem(key:number, callback:any) {
 
 // make this a child of the draggable class
 function Search() {
+    
+    const color = useSelector((state: RootState) => state.settings.color);
 
     function apiSearchQuery() {
         // debounce this
@@ -45,7 +50,7 @@ function Search() {
         searchItem(6, setSelectedSong)
     ];
 
-    return <div key="Search" className='w-full h-full min-w-fit min-h-fit col-span-2 row-span-3 p-3 bg-indigo-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden'>
+    return <div key="Search" className={`w-full h-full min-w-fit min-h-fit col-span-2 row-span-3 p-3 bg-${color}-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden`}>
         <input
             type="text"
             placeholder='search...'

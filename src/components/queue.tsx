@@ -1,5 +1,8 @@
 import { useState } from 'react';
 
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
+
 import remove from '../assets/playlist_remove.svg';
 
 function queueItem(key:number) {
@@ -17,6 +20,8 @@ function queueItem(key:number) {
 // make this a child of the draggable class
 function Queue() {
 
+    const color = useSelector((state: RootState) => state.settings.color);
+
     let tempList = [
         queueItem(1),
         queueItem(2), 
@@ -30,7 +35,7 @@ function Queue() {
         queueItem(10)
     ];
 
-    return <div key="Queue" className='w-full h-full min-w-fit min-h-fit col-span-1 row-span-4 p-3 bg-indigo-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden'>
+    return <div key="Queue" className={`w-full h-full min-w-fit min-h-fit col-span-1 row-span-4 p-3 bg-${color}-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden`}>
         <h2 className='pb-3 text-xl'>Up Next</h2>
         <ul className='flex flex-col gap-1 h-full overflow-y-scroll'>
             {tempList.map(e => {return e;})}

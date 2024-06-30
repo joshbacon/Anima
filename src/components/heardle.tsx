@@ -1,13 +1,18 @@
 import { useState } from 'react';
 
+import { useSelector } from "react-redux";
+import { RootState } from "../state/store";
+
 import play from '../assets/play.svg';
 import right from '../assets/right.svg';
 import wrong from '../assets/wrong.svg';
 
 // make this a child of the draggable class
 function Heardle() {
+    
+    const color = useSelector((state: RootState) => state.settings.color);
 
-    return <div key="Heardle" className='w-full h-full min-w-fit min-h-fit col-span-2 row-span-2 p-3 bg-indigo-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl'>
+    return <div key="Heardle" className={`w-full h-full min-w-fit min-h-fit col-span-2 row-span-2 p-3 bg-${color}-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl`}>
         <div className='flex justify-between items-center mb-4'>
             <h2 className='text-xl'>Heardle</h2>
             <div className='flex gap-2'>
@@ -82,10 +87,10 @@ function Heardle() {
                     />
                     {/* TODO: need a dropdown under the search bar */}
                     <div className='flex justify-between items-center w-full'>
-                        <button className='px-3 py-1 text-lg font-semibold bg-indigo-700 rounded-md'>
+                        <button className={`px-3 py-1 text-lg font-semibold bg-${color}-700 rounded-md`}>
                             Skip (+1 sec)
                         </button>
-                        <button className='px-3 py-1 text-lg font-semibold bg-indigo-700 rounded-md'>
+                        <button className={`px-3 py-1 text-lg font-semibold bg-${color}-700 rounded-md`}>
                             Submit
                         </button>
                     </div>
