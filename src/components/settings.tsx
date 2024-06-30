@@ -31,7 +31,6 @@ interface Props {
 
 function Settings({snapToGrid, updateCallback}: Props) {
 
-    
     const color = useSelector((state: RootState) => state.settings.color);
     const dispatch = useDispatch();
 
@@ -47,7 +46,7 @@ function Settings({snapToGrid, updateCallback}: Props) {
         </h2>
         <div className="flex justify-center items-center gap-2 text-center">
             <button
-                className={`w-full h-full py-1 text-lg font-semibold bg-${color}-700 rounded-md`}
+                className={`w-full h-full py-1 text-lg font-semibold bg-${color}-600 rounded-md`}
                 onClick={() => setSnapping(!snapping)}
             >
                 <h2>{snapping ? "Snap to Grid" : "Free Form"}</h2>
@@ -274,17 +273,17 @@ function Settings({snapToGrid, updateCallback}: Props) {
         </div>
         <div className="flex flex-col gap-3 p-2 rounded-lg hover:bg-eigen hover:bg-opacity-30">
             <div className="flex justify-between items-center flex-wrap gap-3">
-                <h2 className="text-lg">Stats</h2>
+                <h2 className="text-lg">Profile</h2>
                 <div>
                     <input
                         type="checkbox"
-                        id="statsComponent"
-                        name="statsComponent"
-                        value="Stats"
+                        id="profileComponent"
+                        name="profileComponent"
+                        value="Profile"
                         defaultChecked={true}
                         onChange={(e) => updateOpenList(e.target.value, e.target.checked)}
                     />
-                    <label htmlFor="statsComponent" className="pl-2">Show/Hide</label>
+                    <label htmlFor="profileComponent" className="pl-2">Show/Hide</label>
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">

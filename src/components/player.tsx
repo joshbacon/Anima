@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
@@ -14,7 +14,6 @@ import mute from '../assets/mute.svg';
 function Player() {
 
     const color = useSelector((state: RootState) => state.settings.color);
-    console.log(color);
 
     const [playing, setPlaying] = useState<boolean>(false);
     const [currVolume, setCurrVolume] = useState<number>(50);
@@ -31,7 +30,7 @@ function Player() {
         
     }
 
-    return <div key="Player" className={`flex justify-evenly items-center gap-5 w-full h-full min-w-fit min-h-fit col-span-3 bg-${color}-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl`}>
+    return <div key="Player" className={`flex justify-evenly items-center gap-5 w-full h-full min-w-fit min-h-fit col-span-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl`}>
         <div className='flex'>
             <div className='flex flex-col'>
                 <h2 className='text-xl'>Hallelujah</h2>
@@ -62,7 +61,15 @@ function Player() {
             <button onClick={() => toggleMuted(!isMuted)}>
                 <img src={isMuted ? mute : volume} alt="toggle mute" />
             </button>
-            <input type="range" min="1" max="100" step="1" value={isMuted ? 0 : currVolume} onChange={(e:any) => setCurrVolume(e.target.value)} />
+            <input
+                type="range"
+                min="1"
+                max="100"
+                step="1"
+                value={isMuted ? 0 : currVolume}
+                onChange={(e:any) => setCurrVolume(e.target.value)}
+                className={`accent-${color}-600`}
+            />
         </div>
     </div>
 }

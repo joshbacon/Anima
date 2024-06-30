@@ -3,7 +3,7 @@ import { configureStore } from '@reduxjs/toolkit';
 import settingsReducer from './settingsSlice';
 
 
-// check this out when you need asynchronus actions
+// check this out when you need asynchronus actions https://youtu.be/5yEG6GhoJBs?t=1539
 
 export const store = configureStore({
     reducer: {

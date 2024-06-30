@@ -1,4 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+
+import { setToken } from './apicontroller';
 
 import Player from './components/player';
 import Queue from './components/queue';
@@ -6,8 +8,8 @@ import Playlist from './components/playlist';
 import Search from './components/search';
 import Lyrics from './components/lyrics';
 import Heardle from './components/heardle';
-import Stats from './components/stats';
 import Settings from './components/settings';
+import Profile from './components/profile';
 
 import SignIn from './components/signin';
 
@@ -20,7 +22,7 @@ interface Component {
 
 function App() {
 
-  const [signedIn, setSignedIn] = useState<boolean>(true);
+  const [signedIn, setSignedIn] = useState<boolean>(false);
 
   const [componentList, setComponentList] = useState<Component[]>([
     // TODO: get rid of this whole callback thing when redux is added, just have the components each update the store individually
@@ -31,8 +33,13 @@ function App() {
     { id: "Search",   index: 4, showing: true, component: <Search />   },
     { id: "Lyrics",   index: 5, showing: true, component: <Lyrics />   },
     { id: "Heardle",  index: 6, showing: true, component: <Heardle />  },
-    { id: "Stats",    index: 7, showing: true, component: <Stats />    }
+    { id: "Profile",    index: 7, showing: true, component: <Profile />    }
   ]);
+
+  useEffect(() => {
+    // check the login
+    setToken();
+  }, []);
 
   function updateShowing(id:string, isShowing:boolean) {
     let tempList:Component[] = [...componentList];

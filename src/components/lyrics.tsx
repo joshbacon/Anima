@@ -8,7 +8,7 @@ function Lyrics() {
     
     const color = useSelector((state: RootState) => state.settings.color);
 
-    return <div key="Lyrics" className={`w-full h-full min-w-fit min-h-fit col-span-2 row-span-2 bg-${color}-800 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll p-3`}>
+    return <div key="Lyrics" className={`w-full h-full min-w-fit min-h-fit col-span-2 row-span-2 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll p-3`}>
         <h2>
             [Verse 1]
             Now I've heard there was a secret chord
