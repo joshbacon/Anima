@@ -13,7 +13,7 @@ import mute from '../assets/mute.svg';
 // make this a child of the draggable class
 function Player() {
 
-    const color = useSelector((state: RootState) => state.settings.color);
+    const { mode, color, player } = useSelector((state: RootState) => state.settings);
 
     const [playing, setPlaying] = useState<boolean>(false);
     const [currVolume, setCurrVolume] = useState<number>(50);
@@ -30,7 +30,13 @@ function Player() {
         
     }
 
-    return <div key="Player" className={`flex justify-evenly items-center gap-5 w-full h-full min-w-fit min-h-fit col-span-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl`}>
+    return <div
+        key="Player"
+        className={
+            `flex justify-evenly items-center gap-5 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl p-3 ` +
+            (mode ? `w-full h-full col-span-${player.colSpan} row-span-${player.rowSpan}` : `absolute w-[${player.width}px] h-[${player.height}px] top-[${player.posY}px] left-[${player.posX}px]`) 
+        }
+    >
         <div className='flex'>
             <div className='flex flex-col'>
                 <h2 className='text-xl'>Hallelujah</h2>

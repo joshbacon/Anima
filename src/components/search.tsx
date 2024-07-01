@@ -31,7 +31,7 @@ function searchItem(key:number, callback:any) {
 // make this a child of the draggable class
 function Search() {
     
-    const color = useSelector((state: RootState) => state.settings.color);
+    const { mode, color, search } = useSelector((state: RootState) => state.settings);
 
     function apiSearchQuery() {
         // debounce this
@@ -50,7 +50,13 @@ function Search() {
         searchItem(6, setSelectedSong)
     ];
 
-    return <div key="Search" className={`w-full h-full min-w-fit min-h-fit col-span-2 row-span-3 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden`}>
+    return <div
+        key="Search"
+        className={
+            `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden ` + 
+            (mode ? `w-full h-full col-span-${search.colSpan} row-span-${search.rowSpan}` : `absolute w-[${search.width}px] h-[${search.height}px] top-[${search.posY}px] left-[${search.posX}px]`)
+        }
+    >
         <input
             type="text"
             placeholder='search...'

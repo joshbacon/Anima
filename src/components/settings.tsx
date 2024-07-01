@@ -19,39 +19,55 @@
 // have an option to set the cards to glass or other colors
 // have different background colors too (also upload pictures???)
 
-import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../state/store";
-import { changeColor } from "../state/settingsSlice";
+import { toggleMode, changeColor, toggleShowing, changeColSpan, changeRowSpan, changeWidth, changeHeight } from "../state/settingsSlice";
 
 import { signOut } from "../apicontroller";
 
-interface Props {
-    snapToGrid: boolean;
-    updateCallback: (id:string, isShowing:boolean) => void;
-}
+// TODO: turn these in to redux actions.... I think
 
-function Settings({snapToGrid, updateCallback}: Props) {
+// function updateShowing(id:string, isShowing:boolean) {
+//     let tempList:Component[] = [...componentList];
+//     tempList[tempList.map(c => c.id).indexOf(id)].showing = isShowing;
+//     setComponentList(tempList);
+// }
 
-    const color = useSelector((state: RootState) => state.settings.color);
+// //  use this when yo get to rearranging the components
+// function changeIndices(from:number, to:number) {
+//     let tempList:Component[] = [...componentList];
+//     tempList[from].index = to;
+
+//     // Increse all the indecies between to and from (moved up in array)
+//     for (let i = from-1; i >= to; i--) tempList[i].index += 1;
+
+//     // Decrease all the indecies between from and to (moved down in array)
+//     for (let i = from+1; i <= to && i < tempList.length; i++) tempList[i].index -= 1;
+
+//     setComponentList(tempList);
+// }
+
+function Settings() {
+
+    const { mode, color, player, queue, playlist, settings, search, lyrics, heardle, profile } = useSelector((state: RootState) => state.settings);
     const dispatch = useDispatch();
 
-    const [snapping, setSnapping] = useState<boolean>(snapToGrid);
-
-    function updateOpenList(id:string, value:boolean) {
-        updateCallback(id, value);
-    }
-
-    return <div key="Settings" className={`flex flex-col gap-2 w-full h-full min-w-fit min-h-fit row-span-3 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll`}>
+    return <div
+        key="Settings"
+        className={
+            `flex flex-col gap-2 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll ` + 
+            ( mode ? `w-full h-full col-span-${settings.colSpan} row-span-${settings.rowSpan}` : `absolute w-[${settings.width}px] h-[${settings.height}px] top-[${settings.posY}px] left-[${settings.posX}px]`)            
+        }
+    >
         <h2 className="text-xl">
             Settings
         </h2>
         <div className="flex justify-center items-center gap-2 text-center">
             <button
                 className={`w-full h-full py-1 text-lg font-semibold bg-${color}-600 rounded-md`}
-                onClick={() => setSnapping(!snapping)}
+                onClick={() => dispatch(toggleMode())}
             >
-                <h2>{snapping ? "Snap to Grid" : "Free Form"}</h2>
+                <h2>{mode ? "Snap to Grid" : "Free Form"}</h2>
             </button>
         </div>
 
@@ -78,28 +94,52 @@ function Settings({snapToGrid, updateCallback}: Props) {
                         id="playerComponent"
                         name="playerComponent"
                         value="Player"
-                        defaultChecked={true}
-                        onChange={(e) => {updateOpenList(e.target.value, e.target.checked)}}
+                        defaultChecked={player.showing}
+                        onChange={() => dispatch(toggleShowing("player"))}
                     />
                     <label htmlFor="playerComponent" className="pl-2">Show/Hide</label>
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={player.colSpan}
+                        title="columns"
+                        onChange={(e) => {dispatch(changeColSpan({id: "player", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={player.rowSpan}
+                        title="rows"
+                        onChange={(e) => {dispatch(changeRowSpan({id: "player", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={player.width}
+                        title="width"
+                        onChange={(e) => {dispatch(changeWidth({id: "player", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={player.height}
+                        title="height"
+                        onChange={(e) => {dispatch(changeHeight({id: "player", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
         </div>
@@ -112,28 +152,52 @@ function Settings({snapToGrid, updateCallback}: Props) {
                         id="queueComponent"
                         name="queueComponent"
                         value="Queue"
-                        defaultChecked={true}
-                        onChange={(e) => updateOpenList(e.target.value, e.target.checked)}
+                        defaultChecked={queue.showing}
+                        onChange={() => dispatch(toggleShowing("queue"))}
                     />
                     <label htmlFor="queueComponent" className="pl-2">Show/Hide</label>
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={queue.colSpan}
+                        title="columns"
+                        onChange={(e) => {dispatch(changeColSpan({id: "queue", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={queue.rowSpan}
+                        title="rows"
+                        onChange={(e) => {dispatch(changeRowSpan({id: "queue", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={queue.width}
+                        title="width"
+                        onChange={(e) => {dispatch(changeWidth({id: "queue", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={queue.height}
+                        title="height"
+                        onChange={(e) => {dispatch(changeHeight({id: "queue", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
         </div>
@@ -146,28 +210,52 @@ function Settings({snapToGrid, updateCallback}: Props) {
                         id="playlistComponent"
                         name="playlistComponent"
                         value="Playlist"
-                        defaultChecked={true}
-                        onChange={(e) => updateOpenList(e.target.value, e.target.checked)}
+                        defaultChecked={playlist.showing}
+                        onChange={() => dispatch(toggleShowing("playlist"))}
                     />
                     <label htmlFor="playlistComponent" className="pl-2">Show/Hide</label>
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={playlist.colSpan}
+                        title="columns"
+                        onChange={(e) => {dispatch(changeColSpan({id: "playlist", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={playlist.rowSpan}
+                        title="rows"
+                        onChange={(e) => {dispatch(changeRowSpan({id: "playlist", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={playlist.width}
+                        title="width"
+                        onChange={(e) => {dispatch(changeWidth({id: "playlist", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={playlist.height}
+                        title="height"
+                        onChange={(e) => {dispatch(changeHeight({id: "playlist", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
         </div>
@@ -180,28 +268,52 @@ function Settings({snapToGrid, updateCallback}: Props) {
                         id="searchComponent"
                         name="searchComponent"
                         value="Search"
-                        defaultChecked={true}
-                        onChange={(e) => updateOpenList(e.target.value, e.target.checked)}
+                        defaultChecked={search.showing}
+                        onChange={() => dispatch(toggleShowing("search"))}
                     />
                     <label htmlFor="searchComponent" className="pl-2">Show/Hide</label>
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={search.colSpan}
+                        title="columns"
+                        onChange={(e) => {dispatch(changeColSpan({id: "search", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={search.rowSpan}
+                        title="rows"
+                        onChange={(e) => {dispatch(changeRowSpan({id: "search", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={search.width}
+                        title="width"
+                        onChange={(e) => {dispatch(changeWidth({id: "search", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={search.height}
+                        title="height"
+                        onChange={(e) => {dispatch(changeHeight({id: "search", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
         </div>
@@ -214,28 +326,52 @@ function Settings({snapToGrid, updateCallback}: Props) {
                         id="lyricsComponent"
                         name="lyricsComponent"
                         value="Lyrics"
-                        defaultChecked={true}
-                        onChange={(e) => updateOpenList(e.target.value, e.target.checked)}
+                        defaultChecked={lyrics.showing}
+                        onChange={() => dispatch(toggleShowing("lyrics"))}
                     />
                     <label htmlFor="lyricsComponent" className="pl-2">Show/Hide</label>
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={lyrics.colSpan}
+                        title="columns"
+                        onChange={(e) => {dispatch(changeColSpan({id: "lyrics", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={lyrics.rowSpan}
+                        title="rows"
+                        onChange={(e) => {dispatch(changeRowSpan({id: "lyrics", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={lyrics.width}
+                        title="width"
+                        onChange={(e) => {dispatch(changeWidth({id: "lyrics", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={lyrics.height}
+                        title="height"
+                        onChange={(e) => {dispatch(changeHeight({id: "lyrics", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
         </div>
@@ -248,28 +384,52 @@ function Settings({snapToGrid, updateCallback}: Props) {
                         id="heardleComponent"
                         name="heardleComponent"
                         value="Heardle"
-                        defaultChecked={true}
-                        onChange={(e) => updateOpenList(e.target.value, e.target.checked)}
+                        defaultChecked={heardle.showing}
+                        onChange={() => dispatch(toggleShowing("heardle"))}
                     />
                     <label htmlFor="heardleComponent" className="pl-2">Show/Hide</label>
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={heardle.colSpan}
+                        title="columns"
+                        onChange={(e) => {dispatch(changeColSpan({id: "heardle", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={heardle.rowSpan}
+                        title="rows"
+                        onChange={(e) => {dispatch(changeRowSpan({id: "heardle", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={heardle.width}
+                        title="width"
+                        onChange={(e) => {dispatch(changeWidth({id: "heardle", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={heardle.height}
+                        title="height"
+                        onChange={(e) => {dispatch(changeHeight({id: "heardle", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
         </div>
@@ -282,33 +442,102 @@ function Settings({snapToGrid, updateCallback}: Props) {
                         id="profileComponent"
                         name="profileComponent"
                         value="Profile"
-                        defaultChecked={true}
-                        onChange={(e) => updateOpenList(e.target.value, e.target.checked)}
+                        defaultChecked={profile.showing}
+                        onChange={() => dispatch(toggleShowing("profile"))}
                     />
                     <label htmlFor="profileComponent" className="pl-2">Show/Hide</label>
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={profile.colSpan}
+                        title="columns"
+                        onChange={(e) => {dispatch(changeColSpan({id: "profile", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={profile.rowSpan}
+                        title="rows"
+                        onChange={(e) => {dispatch(changeRowSpan({id: "profile", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapping ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={profile.width}
+                        title="width"
+                        onChange={(e) => {dispatch(changeWidth({id: "profile", value: +e.target.value}))}}
+                    />
                     <h2>x</h2>
-                    <input type="text" className="w-11 rounded-lg"/>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={profile.height}
+                        title="height"
+                        onChange={(e) => {dispatch(changeHeight({id: "profile", value: +e.target.value}))}}
+                    />
+                </div>
+            </div>
+        </div>
+        <div className="flex flex-col gap-3 p-2 rounded-lg hover:bg-eigen hover:bg-opacity-30">
+            <h2 className="text-lg">Settings</h2>
+            <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
+                <h2>grid span</h2>
+                <div className="flex gap-1">
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={settings.colSpan}
+                        title="columns"
+                        onChange={(e) => {dispatch(changeColSpan({id: "settings", value: +e.target.value}))}}
+                    />
+                    <h2>x</h2>
+                    <input
+                        type="number"
+                        className="w-11 rounded-lg text-center"
+                        value={settings.rowSpan}
+                        title="rows"
+                        onChange={(e) => {dispatch(changeRowSpan({id: "settings", value: +e.target.value}))}}
+                    />
+                </div>
+            </div>
+            <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
+                <h2>width/height</h2>
+                <div className="flex gap-1">
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={settings.width}
+                        title="width"
+                        onChange={(e) => {dispatch(changeWidth({id: "settings", value: +e.target.value}))}}
+                    />
+                    <h2>x</h2>
+                    <input
+                        type="number"
+                        className="w-14 rounded-lg text-center"
+                        value={settings.height}
+                        title="height"
+                        onChange={(e) => {dispatch(changeHeight({id: "settings", value: +e.target.value}))}}
+                    />
                 </div>
             </div>
         </div>
         
-        <div className="flex justify-center items-center gap-2 text-center">
+        <div className="flex justify-center items-center gap-2 w-full text-center">
             <button
                 className={`w-full h-full py-1 text-lg font-semibold bg-${color}-600 rounded-md`}
                 onClick={signOut}

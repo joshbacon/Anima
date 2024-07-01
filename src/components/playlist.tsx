@@ -21,7 +21,7 @@ function playlistItem(key:number) {
 // make this a child of the draggable class
 function Playlist() {
     
-    const color = useSelector((state: RootState) => state.settings.color);
+    const { mode, color, playlist } = useSelector((state: RootState) => state.settings);
 
     let tempList = [
         playlistItem(1),
@@ -36,7 +36,13 @@ function Playlist() {
         playlistItem(10)
     ];
 
-    return <div key="Playlist" className={`w-full h-full min-w-fit min-h-fit col-span-2 row-span-4 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden`}>
+    return <div
+        key="Playlist"
+        className={
+            `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden ` + 
+            (mode ? `w-full h-full col-span-${playlist.colSpan} row-span-${playlist.rowSpan}` : `absolute w-[${playlist.width}px] h-[${playlist.height}px] top-[${playlist.posY}px] left-[${playlist.posX}px]`)
+        }
+    >
         <h2 className='pb-3 text-xl'>Playlist</h2>
         <ul className='flex flex-col gap-1 w-full h-full overflow-y-scroll'>
             {tempList.map((e) => {return e})}

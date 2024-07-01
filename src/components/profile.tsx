@@ -18,7 +18,7 @@ function Profile() {
         getProfile();
     }, []);
     
-    const color = useSelector((state: RootState) => state.settings.color);
+    const { mode, color, profile } = useSelector((state: RootState) => state.settings);
     
     let tempList = [
         trackItem(1),
@@ -39,7 +39,13 @@ function Profile() {
         </li>
     }
 
-    return <div key="Profile" className={`flex flex-col gap-4 w-full h-full min-w-fit min-h-fit p-3 col-span-2 row-span-2 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll`}>
+    return <div
+        key="Profile"
+        className={
+            `flex flex-col gap-4 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll ` +
+            ( mode ? `w-full h-full col-span-${profile.colSpan} row-span-${profile.rowSpan}` : `absolute w-[${profile.width}px] h-[${profile.height}px] top-[${profile.posY}px] left-[${profile.posX}px]`)
+        }
+    >
         <div className='flex justify-start items-center gap-3'>
             <img src={account} alt="" />
             <h2 className='text-xl'>Profile</h2>

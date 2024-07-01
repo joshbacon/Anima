@@ -10,9 +10,15 @@ import wrong from '../assets/wrong.svg';
 // make this a child of the draggable class
 function Heardle() {
     
-    const color = useSelector((state: RootState) => state.settings.color);
+    const { mode, color, heardle} = useSelector((state: RootState) => state.settings);
 
-    return <div key="Heardle" className={`w-full h-full min-w-fit min-h-fit col-span-2 row-span-2 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl`}>
+    return <div
+        key="Heardle"
+        className={
+            `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl ` + 
+            (mode ? `w-full h-full col-span-${heardle.colSpan} row-span-${heardle.rowSpan}` : `absolute w-[${heardle.width}px] h-[${heardle.height}px] top-[${heardle.posY}px] left-[${heardle.posX}px]`)
+        }
+    >
         <div className='flex justify-between items-center mb-4'>
             <h2 className='text-xl'>Heardle</h2>
             <div className='flex gap-2'>
