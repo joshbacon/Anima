@@ -1,24 +1,13 @@
 // https://developer.spotify.com/documentation/web-api
 // https://developer.spotify.com/documentation/web-api/howtos/web-app-profile
-// https://ritvikbiswas.medium.com/connecting-to-the-spotify-api-using-node-js-and-axios-client-credentials-flow-c769e2bee818
 
 import axios from "axios";
 
 import { Buffer } from "buffer";
 
-
-
-// ok the token seems to be working properly
-// but when it's used it gives a 401 (Unauthorized) error
-// API suggests re-authenticating but it happens with fresh credentials
-
-
-
-
 export var VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 export var VITE_REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
 export var VITE_AUTH_ENDPOINT = import.meta.env.VITE_AUTH_ENDPOINT;
-// export var VITE_RESPONSE_TYPE = import.meta.env.VITE_RESPONSE_TYPE;
 export var VITE_SECRET = import.meta.env.VITE_SECRET;
 
 export async function setToken() {
@@ -29,14 +18,14 @@ export async function setToken() {
     localStorage.setItem('code', code);
 
     let authToken = Buffer.from(`${VITE_CLIENT_ID}:${VITE_SECRET}`, 'utf-8').toString('base64');
-    // console.log(authToken);
 
+    // This returns a 200 response then a 400 (Bad Request Error)
+    // believe it's just because it's in development mode and the state loads twice
     const response = await axios.post('https://accounts.spotify.com/api/token', {
-        'grant_type': 'client_credentials',
-        // 'grant_type': 'authorization_code',
         'client_id': VITE_CLIENT_ID,
-        'client_secret': VITE_SECRET,
+        'grant_type': 'authorization_code',
         'code': code,
+        'redirect_uri': "http://localhost:5173",
         'code_verifier': localStorage.getItem('verifier')
     }, {
         headers: {
@@ -44,7 +33,7 @@ export async function setToken() {
             "Content-Type": 'application/x-www-form-urlencoded',
         },
     })
-    // console.log(response);
+    console.log(response);
     localStorage.setItem('token', response.data.access_token);
 }
 
@@ -91,8 +80,6 @@ export function signOut() {
 }
 
 export async function getProfile() {
-    // console.log('Authorization: ' + `Bearer ${localStorage.getItem('token')}`);
-
     axios.get("https://api.spotify.com/v1/me", {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })

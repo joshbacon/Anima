@@ -26,9 +26,9 @@ function App() {
 
   useEffect(() => {    
     // Show the dashboard if they are already signed in and have a token
-    // if (localStorage.getItem('token')){
-    //   setSignedIn(true);
-    // } else {
+    if (localStorage.getItem('token')){
+      setSignedIn(true);
+    } else {
       // Else check for the redirect code and set the token
       const params = new URLSearchParams(window.location.search);
       const code = params.get("code");
@@ -37,7 +37,7 @@ function App() {
           setSignedIn(true);
         });
       }
-    // }
+    }
 
   }, []);
 

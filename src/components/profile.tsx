@@ -13,6 +13,8 @@ import info from '../assets/info.svg';
 function Profile() {
 
     useEffect(() => {
+        // figure out where to load this... right now when the component is loaded
+        // it calls again but we really just need one on initial load ofthe page
         getProfile();
     }, []);
     
