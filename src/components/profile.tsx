@@ -1,7 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+
+import { getProfile } from '../apicontroller';
 
 import account from '../assets/account.svg';
 import album from '../assets/album.svg';
@@ -9,6 +11,10 @@ import info from '../assets/info.svg';
 
 // make this a child of the draggable class
 function Profile() {
+
+    useEffect(() => {
+        getProfile();
+    }, []);
     
     const color = useSelector((state: RootState) => state.settings.color);
     

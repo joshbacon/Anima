@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react';
 
-import { setToken } from './apicontroller';
-
 import Player from './components/player';
 import Queue from './components/queue';
 import Playlist from './components/playlist';
@@ -12,6 +10,8 @@ import Settings from './components/settings';
 import Profile from './components/profile';
 
 import SignIn from './components/signin';
+
+import { setToken } from './apicontroller';
 
 interface Component {
   id: string,
@@ -24,6 +24,23 @@ function App() {
 
   const [signedIn, setSignedIn] = useState<boolean>(false);
 
+  useEffect(() => {    
+    // Show the dashboard if they are already signed in and have a token
+    // if (localStorage.getItem('token')){
+    //   setSignedIn(true);
+    // } else {
+      // Else check for the redirect code and set the token
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("code");
+      if (code) {
+        setToken().then(() => {
+          setSignedIn(true);
+        });
+      }
+    // }
+
+  }, []);
+
   const [componentList, setComponentList] = useState<Component[]>([
     // TODO: get rid of this whole callback thing when redux is added, just have the components each update the store individually
     { id: "Player",   index: 0, showing: true, component: <Player />   },
@@ -33,13 +50,8 @@ function App() {
     { id: "Search",   index: 4, showing: true, component: <Search />   },
     { id: "Lyrics",   index: 5, showing: true, component: <Lyrics />   },
     { id: "Heardle",  index: 6, showing: true, component: <Heardle />  },
-    { id: "Profile",    index: 7, showing: true, component: <Profile />    }
+    { id: "Profile",  index: 7, showing: true, component: <Profile />  }
   ]);
-
-  useEffect(() => {
-    // check the login
-    setToken();
-  }, []);
 
   function updateShowing(id:string, isShowing:boolean) {
     let tempList:Component[] = [...componentList];
@@ -62,13 +74,12 @@ function App() {
   }
 
   return <div key="main" className='w-screen h-screen min-w-fit min-h-fit overflow-auto inline-grid place-items-center gap-3 grid-cols-6 grid-rows-6 p-3 font-main'>
-    {
+    { !signedIn ?
+      <SignIn /> :
       componentList.sort((a:Component, b:Component) => a.index - b.index).map(c => {
         return c.showing ? c.component : null;
       })
     }
-
-    { !signedIn ? <SignIn passLoginResult={setSignedIn} /> : null }
   </div>
 }
 

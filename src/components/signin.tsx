@@ -2,32 +2,9 @@
 
 // somehow save login data (is this when you switch to cookies instead of locaStorage?)
 
-import { useState } from 'react';
+import { redirectToAuth } from '../apicontroller';
 
-import { signIn, getProfile } from '../apicontroller';
-
-
-interface signInProps {
-    passLoginResult: (value:boolean) => void;
-}
-
-function SignIn({passLoginResult}: signInProps) {
-
-    signIn();
-    getProfile();
-
-    const [showingPassword, setShowingPassword] = useState<boolean>(false);
-
-    function handleLogin() {
-        let loginError:boolean = false;
-
-        if (loginError) {
-            passLoginResult(false);
-        } else {
-            passLoginResult(true);
-        }
-    }
-
+function SignIn() {
     return <div className="absolute top-0 left-0 z-50 w-screen h-screen bg-eigen grid place-items-center">
         <div className='z-0 absolute w-64 aspect-square rounded-full drop-shadow-circle bg-sky-500 animate-wriggle1' />
         <div className='z-0 absolute w-32 aspect-square rounded-full drop-shadow-circle bg-sky-500 animate-wriggle2' />
@@ -38,32 +15,11 @@ function SignIn({passLoginResult}: signInProps) {
                 <h1 className='text-3xl font-bold'>ANIMA</h1>
                 <h2 className="text-lg font-semibold">Customize your listening experience</h2>
             </div>
-            {/* <div className='flex flex-col gap-5 w-full px-12'>
-                <div>
-                    <h2 className='text-xl font-semibold pb-2'>Username</h2>
-                    <input
-                        type="text"
-                        placeholder="username"
-                        className='w-full px-2 py-1 text-xl rounded-md'
-                    />
-                </div>
-                <div className='flex flex-col items-start'>
-                    <h2 className='text-xl font-semibold pb-2'>Password</h2>
-                    <input
-                        type={showingPassword ? "text" : "password"}
-                        placeholder="password"
-                        className='w-full px-2 py-1 text-xl rounded-md'
-                    />
-                    <button onClick={() => setShowingPassword(!showingPassword)}>
-                        {showingPassword ? 'Hide' : 'Show'}
-                    </button>
-                </div>
-            </div> */}
             <button
-                onClick={handleLogin}
+                onClick={redirectToAuth}
                 className='w-full h-16 text-lg font-semibold bg-indigo-700 rounded-md'
             >
-                Log In
+                Log In with Spotify
             </button>
         </div>
     </div>

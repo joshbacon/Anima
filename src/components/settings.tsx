@@ -24,6 +24,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../state/store";
 import { changeColor } from "../state/settingsSlice";
 
+import { signOut } from "../apicontroller";
+
 interface Props {
     snapToGrid: boolean;
     updateCallback: (id:string, isShowing:boolean) => void;
@@ -304,6 +306,15 @@ function Settings({snapToGrid, updateCallback}: Props) {
                     <input type="text" className="w-11 rounded-lg"/>
                 </div>
             </div>
+        </div>
+        
+        <div className="flex justify-center items-center gap-2 text-center">
+            <button
+                className={`w-full h-full py-1 text-lg font-semibold bg-${color}-600 rounded-md`}
+                onClick={signOut}
+            >
+                <h2>Sign Out</h2>
+            </button>
         </div>
     </div>
 }
