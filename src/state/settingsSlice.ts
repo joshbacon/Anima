@@ -1,5 +1,8 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
+// this isn't working to load in existing settings.... fix it
+const existingState:SettingsState = JSON.parse(localStorage.getItem('settings')!);
+
 interface ComponentState {
     index: number;
     showing: boolean;
@@ -12,91 +15,91 @@ interface ComponentState {
 }
 
 const initialPlayer:ComponentState = {
-    index: 0,
-    showing: true,
-    colSpan: 3,
-    rowSpan: 1,
-    width: 820,
-    height: 145,
-    posX: 12,
-    posY: 12
+    index: existingState.player.index ?? 0,
+    showing: existingState.player.showing ?? true,
+    colSpan: existingState.player.colSpan ?? 4,
+    rowSpan: existingState.player.rowSpan ?? 1,
+    width: existingState.player.width ?? 820,
+    height: existingState.player.height ?? 145,
+    posX: existingState.player.posX ?? 12,
+    posY: existingState.player.posY ?? 12
 }
 
 const initialQueue:ComponentState = {
-    index: 1,
-    showing: true,
-    colSpan: 1,
-    rowSpan: 4,
-    width: 265,
-    height: 615,
-    posX: 12,
-    posY: 169
+    index: existingState.queue.index ?? 1,
+    showing: existingState.queue.showing ?? true,
+    colSpan: existingState.queue.colSpan ?? 2,
+    rowSpan: existingState.queue.rowSpan ?? 4,
+    width: existingState.queue.width ?? 265,
+    height: existingState.queue.height ?? 615,
+    posX: existingState.queue.posX ?? 12,
+    posY: existingState.queue.posY ?? 169
 }
 
 const initialPlaylist:ComponentState = {
-    index: 2,
-    showing: true,
-    colSpan: 2,
-    rowSpan: 4,
-    width: 500,
-    height: 615,
-    posX: 844,
-    posY: 12
+    index: existingState.playlist.index ?? 2,
+    showing: existingState.playlist.showing ?? true,
+    colSpan: existingState.playlist.colSpan ?? 2,
+    rowSpan: existingState.playlist.rowSpan ?? 4,
+    width: existingState.playlist.width ?? 500,
+    height: existingState.playlist.height ?? 615,
+    posX: existingState.playlist.posX ?? 844,
+    posY: existingState.playlist.posY ?? 12
 }
 
 const initialSettings:ComponentState = {
-    index: 3,
-    showing: true,
-    colSpan: 1,
-    rowSpan: 3,
-    width: 500,
-    height: 301,
-    posX: 844,
-    posY: 639
+    index: existingState.settings.index ?? 3,
+    showing: existingState.settings.showing ?? true,
+    colSpan: existingState.settings.colSpan ?? 2,
+    rowSpan: existingState.settings.rowSpan ?? 3,
+    width: existingState.settings.width ?? 500,
+    height: existingState.settings.height ?? 301,
+    posX: existingState.settings.posX ?? 844,
+    posY: existingState.settings.posY ?? 639
 }
 
 const initialSearch:ComponentState = {
-    index: 4,
-    showing: true,
-    colSpan: 2,
-    rowSpan: 3,
-    width: 543,
-    height: 615,
-    posX: 289,
-    posY: 169
+    index: existingState.search.index ?? 4,
+    showing: existingState.search.showing ?? true,
+    colSpan: existingState.search.colSpan ?? 3,
+    rowSpan: existingState.search.rowSpan ?? 3,
+    width: existingState.search.width ?? 543,
+    height: existingState.search.height ?? 615,
+    posX: existingState.search.posX ?? 289,
+    posY: existingState.search.posY ?? 169
 }
 
 const initialLyrics:ComponentState = {
-    index: 5,
-    showing: true,
-    colSpan: 2,
-    rowSpan: 2,
-    width: 550,
-    height: 301,
-    posX: 1356,
-    posY: 12
+    index: existingState.lyrics.index ?? 5,
+    showing: existingState.lyrics.showing ?? true,
+    colSpan: existingState.lyrics.colSpan ?? 2,
+    rowSpan: existingState.lyrics.rowSpan ?? 3,
+    width: existingState.lyrics.width ?? 550,
+    height: existingState.lyrics.height ?? 301,
+    posX: existingState.lyrics.posX ?? 1356,
+    posY: existingState.lyrics.posY ?? 12
 }
 
 const initialHeardle:ComponentState = {
-    index: 6,
-    showing: true,
-    colSpan: 2,
-    rowSpan: 2,
-    width: 550,
-    height: 301,
-    posX: 1356,
-    posY: 325
+    index: existingState.heardle.index ?? 6,
+    showing: existingState.heardle.showing ?? true,
+    colSpan: existingState.heardle.colSpan ?? 3,
+    rowSpan: existingState.heardle.rowSpan ?? 2,
+    width: existingState.heardle.width ?? 550,
+    height: existingState.heardle.height ?? 301,
+    posX: existingState.heardle.posX ?? 1356,
+    posY: existingState.heardle.posY ?? 325
 }
 
 const initialProfile:ComponentState = {
-    index: 7,
-    showing: true,
-    colSpan: 2,
-    rowSpan: 2,
-    width: 550,
-    height: 301,
-    posX: 1356,
-    posY: 638
+    index: existingState.profile.index ?? 7,
+    showing: existingState.profile.showing ?? true,
+    colSpan: existingState.profile.colSpan ?? 3,
+    rowSpan: existingState.profile.rowSpan ?? 2,
+    width: existingState.profile.width ?? 550,
+    height: existingState.profile.height ?? 301,
+    posX: existingState.profile.posX ?? 1356,
+    posY: existingState.profile.posY ?? 638
 }
 
 interface SettingsState {
@@ -113,7 +116,7 @@ interface SettingsState {
 }
 
 const initialState:SettingsState = {
-    mode: true,
+    mode: false,
     color: "purple",
     player: initialPlayer,
     queue: initialQueue,

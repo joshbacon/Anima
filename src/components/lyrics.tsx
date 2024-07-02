@@ -2,21 +2,19 @@ import { useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import { colSize, rowSize } from '../constants/grid';
 
 // make this a child of the draggable class
 function Lyrics() {
-
-    let winWidth = useRef(window.innerWidth);
-    let winHeight = useRef(window.innerHeight);
     
     const { mode, color, lyrics } = useSelector((state: RootState) => state.settings);
 
     return <div
         key="Lyrics"
         style={ mode ? {
-            width: `${colSize(winWidth.current, lyrics.colSpan)}px`,
-            height: `${rowSize(winHeight.current, lyrics.rowSpan)}px`,
+            width: `100%`,
+            height: `100%`,
+            gridColumn: `span ${lyrics.colSpan}`,
+            gridRow: `span ${lyrics.rowSpan}`
         }: {
             position: 'absolute',
             top: 0,
@@ -25,7 +23,7 @@ function Lyrics() {
             height: `${lyrics.height}px`,
             transform: `translate(${lyrics.posX}px, ${lyrics.posY}px)`
         }}
-        className={`min-w-[225px] bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll p-3 transition-all duration-700`}
+        className={`bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll p-3 transition-all duration-700`}
     >
         <h2>
             [Verse 1]

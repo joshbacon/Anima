@@ -2,7 +2,6 @@ import { useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import { colSize, rowSize } from '../constants/grid';
 
 import info from '../assets/info.svg';
 import album from '../assets/album.svg';
@@ -31,9 +30,6 @@ function searchItem(key:number, callback:any) {
 
 // make this a child of the draggable class
 function Search() {
-
-    let winWidth = useRef(window.innerWidth);
-    let winHeight = useRef(window.innerHeight);
     
     const { mode, color, search } = useSelector((state: RootState) => state.settings);
 
@@ -57,8 +53,10 @@ function Search() {
     return <div
         key="Search"
         style={ mode ? {
-            width: `${colSize(winWidth.current, search.colSpan)}px`,
-            height: `${rowSize(winHeight.current, search.rowSpan)}px`,
+            width: `100%`,
+            height: `100%`,
+            gridColumn: `span ${search.colSpan}`,
+            gridRow: `span ${search.rowSpan}`
         }: {
             position: 'absolute',
             top: 0,

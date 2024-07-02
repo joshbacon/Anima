@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import { colSize, rowSize } from '../constants/grid';
 
 import { setProfile, setTopItems } from '../apicontroller';
 
@@ -12,9 +11,6 @@ import info from '../assets/info.svg';
 
 // make this a child of the draggable class
 function Profile() {
-
-    let winWidth = useRef(window.innerWidth);
-    let winHeight = useRef(window.innerHeight);
 
     useEffect(() => {
         // figure out where to load this... right now when the component is loaded
@@ -47,8 +43,10 @@ function Profile() {
     return <div
         key="Profile"
         style={ mode ? {
-            width: `${colSize(winWidth.current, profile.colSpan)}px`,
-            height: `${rowSize(winHeight.current, profile.rowSpan)}px`,
+            width: `100%`,
+            height: `100%`,
+            gridColumn: `span ${profile.colSpan}`,
+            gridRow: `span ${profile.rowSpan}`
         }: {
             position: 'absolute',
             top: 0,
@@ -69,7 +67,7 @@ function Profile() {
             </select>
         </div>
         <div>
-            <h2 className='text-lg'>Top artists this month</h2>
+            <h2 className='text-lg'>Top artists</h2>
             <div className='flex gap-2 text-center'>
                 <div className='flex flex-col w-1/3 h-full hover:bg-eigen-light hover:bg-opacity-50 rounded-xl'>
                     <img src={album} alt="album cover" />
@@ -86,7 +84,7 @@ function Profile() {
             </div>
         </div>
         <div>
-            <h2 className='text-lg'>Top tracks this month</h2>
+            <h2 className='text-lg'>Top tracks</h2>
             <ul className='flex flex-col gap-1'>
                 {tempList.map((e) => {return e})}
             </ul>

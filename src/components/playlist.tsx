@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import { colSize, rowSize } from '../constants/grid';
 
 import info from '../assets/info.svg';
 import album from '../assets/album.svg';
@@ -21,9 +20,6 @@ function playlistItem(key:number) {
 
 // make this a child of the draggable class
 function Playlist() {
-
-    let winWidth = useRef(window.innerWidth);
-    let winHeight = useRef(window.innerHeight);
     
     const { mode, color, playlist } = useSelector((state: RootState) => state.settings);
 
@@ -43,8 +39,10 @@ function Playlist() {
     return <div
         key="Playlist"
         style={ mode ? {
-            width: `${colSize(winWidth.current, playlist.colSpan)}px`,
-            height: `${rowSize(winHeight.current, playlist.rowSpan)}px`,
+            width: `100%`,
+            height: `100%`,
+            gridColumn: `span ${playlist.colSpan}`,
+            gridRow: `span ${playlist.rowSpan}`
         }: {
             position: 'absolute',
             top: 0,
@@ -53,9 +51,9 @@ function Playlist() {
             height: `${playlist.height}px`,
             transform: `translate(${playlist.posX}px, ${playlist.posY}px)`,
         }}
-        className={`min-w-[225px] p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
+        className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
     >
-        <h2 className='pb-3 text-xl'>Playlist</h2>
+        <h2 className='pb-3 text-xl'>Playlists</h2>
         <ul className='flex flex-col gap-1 w-full h-full overflow-y-scroll'>
             {tempList.map((e) => {return e})}
         </ul>

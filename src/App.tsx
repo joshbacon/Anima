@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from 'react';
 
 import { setToken } from './apicontroller';
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "./state/store";
 
 import Player from './components/player';
@@ -25,30 +25,11 @@ interface Component {
 
 function App() {
 
-  // TODO: stringify the settings data and put in localStorage
-  //       - then load it in with the initial page (is it exists)
-  //       * allows for mainly redux use but saves it between sessions
-  //       - just figure out how often to write to localStorage
-  //         (basically whenever a setting or position is changed)
-  const state = useSelector((state: RootState) => state.settings);
-  // console.log(JSON.stringify(state));
-
-
-
-  let winWidth = useRef(window.innerWidth);
-  let winHeight = useRef(window.innerHeight);
-
   const { mode, player, queue, playlist, settings, search, lyrics, heardle, profile } = useSelector((state: RootState) => state.settings);
 
   const [signedIn, setSignedIn] = useState<boolean>(false);
 
-  function setScreenSize() {
-    localStorage.setItem('winWidth', `${winWidth.current}`);
-    localStorage.setItem('winHeight', `${winHeight.current}`);
-  }
-
   useEffect(() => {
-    setScreenSize();
     // Show the dashboard if they are already signed in and have a token
     if (localStorage.getItem('token')){
       // looks like the token expires so look into reloading it before setting signedIn
@@ -68,7 +49,6 @@ function App() {
 
   // need to rethink this whole mapping concept now that redux is setup
   const [componentList, setComponentList] = useState<Component[]>([
-    // TODO: get rid of this whole callback thing when redux is added, just have the components each update the store individually
     { id: "Player",   index: 0, showing: player.showing,   component: <Player />   },
     { id: "Queue",    index: 1, showing: queue.showing,    component: <Queue />    },
     { id: "Playlist", index: 2, showing: playlist.showing, component: <Playlist /> },
@@ -82,8 +62,8 @@ function App() {
   return <div
     key="main"
     className={
-      `w-screen h-screen overflow-auto p-3 font-main ` + 'flex flex-wrap gap-3'
-      // ( mode ? 'inline-grid place-items-center gap-3 grid-cols-6' : '')
+      `w-screen h-screen overflow-auto p-3 font-main ` +
+      ( mode ? 'grid place-items-center gap-3 grid-cols-[repeat(auto-fit,minmax(150px,1fr))] auto-rows-[144px]' : '')
     }
   >
     { !signedIn ?

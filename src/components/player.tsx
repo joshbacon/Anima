@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
-import { colSize, rowSize } from '../constants/grid';
 
 import play from '../assets/play.svg';
 import pause from '../assets/pause.svg';
@@ -14,9 +13,6 @@ import { getCurrentlyPlaying } from '../apicontroller';
 
 // make this a child of the draggable class
 function Player() {
-
-    let winWidth = useRef(window.innerWidth);
-    let winHeight = useRef(window.innerHeight);
 
     const { mode, color, player } = useSelector((state: RootState) => state.settings);
 
@@ -35,18 +31,14 @@ function Player() {
         
     }
 
-    // need to set a min w/h for each individual component
-    //  - set in the class of each
-    //  - set in the settings input boxes (span and custom)
-    //  - set as the initial state in the settingsSlice
-    // look into mosaic libraries for a better fit of components
-
     return <div
         key="Player"
         style={ mode ? {
-            width: `${colSize(winWidth.current, player.colSpan)}px`,
-            height: `${rowSize(winHeight.current, player.rowSpan)}px`,
-        }: {
+            width: `100%`,
+            height: `100%`,
+            gridColumn: `span ${player.colSpan}`,
+            gridRow: `span ${player.rowSpan}`
+        } : {
             position: 'absolute',
             top: 0,
             left: 0,
