@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import { colSize, rowSize } from '../constants/grid';
 
 import remove from '../assets/playlist_remove.svg';
 
@@ -20,6 +21,9 @@ function queueItem(key:number) {
 // make this a child of the draggable class
 function Queue() {
 
+    let winWidth = useRef(window.innerWidth);
+    let winHeight = useRef(window.innerHeight);
+
     const { mode, color, queue } = useSelector((state: RootState) => state.settings);
 
     let tempList = [
@@ -37,10 +41,20 @@ function Queue() {
 
     return <div
         key="Queue"
-        className={
-            `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden ` + 
-            (mode ? `w-full h-full col-span-${queue.colSpan} row-span-${queue.rowSpan}` : `absolute w-[${queue.width}px] h-[${queue.height}px] top-[${queue.posY}px] left-[${queue.posX}px]`)
-        }
+        style={ mode ? {
+            width: `${colSize(winWidth.current, queue.colSpan)}px`,
+            height: `${rowSize(winHeight.current, queue.rowSpan)}px`,
+            minWidth: `${colSize(winWidth.current, 2)}px`,
+            minHeight: `${rowSize(winHeight.current, 4)}px`,
+        }: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: `${queue.width}px`,
+            height: `${queue.height}px`,
+            transform: `translate(${queue.posX}px, ${queue.posY}px)`,
+        }}
+        className={`min-w-[225px] p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
     >
         <h2 className='pb-3 text-xl'>Up Next</h2>
         <ul className='flex flex-col gap-1 h-full overflow-y-scroll'>

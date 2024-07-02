@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import { colSize, rowSize } from '../constants/grid';
 
 import play from '../assets/play.svg';
 import right from '../assets/right.svg';
@@ -9,15 +10,26 @@ import wrong from '../assets/wrong.svg';
 
 // make this a child of the draggable class
 function Heardle() {
+
+    let winWidth = useRef(window.innerWidth);
+    let winHeight = useRef(window.innerHeight);
     
     const { mode, color, heardle} = useSelector((state: RootState) => state.settings);
 
     return <div
         key="Heardle"
-        className={
-            `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl ` + 
-            (mode ? `w-full h-full col-span-${heardle.colSpan} row-span-${heardle.rowSpan}` : `absolute w-[${heardle.width}px] h-[${heardle.height}px] top-[${heardle.posY}px] left-[${heardle.posX}px]`)
-        }
+        style={ mode ? {
+            width: `${colSize(winWidth.current, heardle.colSpan)}px`,
+            height: `${rowSize(winHeight.current, heardle.rowSpan)}px`,
+        }: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: `${heardle.width}px`,
+            height: `${heardle.height}px`,
+            transform: `translate(${heardle.posX}px, ${heardle.posY}px)`
+        }}
+        className={`min-w-[450px] min-h-[290px] p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-auto transition-all duration-700`}
     >
         <div className='flex justify-between items-center mb-4'>
             <h2 className='text-xl'>Heardle</h2>
@@ -28,7 +40,6 @@ function Heardle() {
                     <option value="local">Your Music</option>
                     <option value="20s">20s</option>
                     <option value="10s">10s</option>
-                    <option value="00s">00s</option>
                     <option value="90s">90s</option>
                     <option value="80s">80s</option>
                     <option value="70s">70s</option>

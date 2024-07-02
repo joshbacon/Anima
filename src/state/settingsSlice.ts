@@ -18,8 +18,8 @@ const initialPlayer:ComponentState = {
     rowSpan: 1,
     width: 820,
     height: 145,
-    posX: 5,
-    posY: 5
+    posX: 12,
+    posY: 12
 }
 
 const initialQueue:ComponentState = {
@@ -29,8 +29,8 @@ const initialQueue:ComponentState = {
     rowSpan: 4,
     width: 265,
     height: 615,
-    posX: 50,
-    posY: 50
+    posX: 12,
+    posY: 169
 }
 
 const initialPlaylist:ComponentState = {
@@ -38,10 +38,10 @@ const initialPlaylist:ComponentState = {
     showing: true,
     colSpan: 2,
     rowSpan: 4,
-    width: 545,
+    width: 500,
     height: 615,
-    posX: 100,
-    posY: 100
+    posX: 844,
+    posY: 12
 }
 
 const initialSettings:ComponentState = {
@@ -49,10 +49,10 @@ const initialSettings:ComponentState = {
     showing: true,
     colSpan: 1,
     rowSpan: 3,
-    width: 270,
-    height: 458,
-    posX: 150,
-    posY: 150
+    width: 500,
+    height: 301,
+    posX: 844,
+    posY: 639
 }
 
 const initialSearch:ComponentState = {
@@ -60,10 +60,10 @@ const initialSearch:ComponentState = {
     showing: true,
     colSpan: 2,
     rowSpan: 3,
-    width: 550,
+    width: 543,
     height: 615,
-    posX: 200,
-    posY: 200
+    posX: 289,
+    posY: 169
 }
 
 const initialLyrics:ComponentState = {
@@ -73,8 +73,8 @@ const initialLyrics:ComponentState = {
     rowSpan: 2,
     width: 550,
     height: 301,
-    posX: 250,
-    posY: 250
+    posX: 1356,
+    posY: 12
 }
 
 const initialHeardle:ComponentState = {
@@ -84,8 +84,8 @@ const initialHeardle:ComponentState = {
     rowSpan: 2,
     width: 550,
     height: 301,
-    posX: 300,
-    posY: 300
+    posX: 1356,
+    posY: 325
 }
 
 const initialProfile:ComponentState = {
@@ -95,8 +95,8 @@ const initialProfile:ComponentState = {
     rowSpan: 2,
     width: 550,
     height: 301,
-    posX: 350,
-    posY: 350
+    posX: 1356,
+    posY: 638
 }
 
 interface SettingsState {
@@ -141,25 +141,25 @@ const settingsSlice = createSlice({
                     state.player.showing = !state.player.showing;
                     break;
                 case 'queue':
-                    state.player.showing = !state.player.showing;
+                    state.queue.showing = !state.queue.showing;
                     break;
                 case 'playlist':
-                    state.player.showing = !state.player.showing;
+                    state.playlist.showing = !state.playlist.showing;
                     break;
                 case 'settings':
-                    state.player.showing = !state.player.showing;
+                    state.settings.showing = !state.settings.showing;
                     break;
                 case 'search':
-                    state.player.showing = !state.player.showing;
+                    state.search.showing = !state.search.showing;
                     break;
                 case 'lyrics':
-                    state.player.showing = !state.player.showing;
+                    state.lyrics.showing = !state.lyrics.showing;
                     break;
                 case 'heardle':
-                    state.player.showing = !state.player.showing;
+                    state.heardle.showing = !state.heardle.showing;
                     break;
                 case 'profile':
-                    state.player.showing = !state.player.showing;
+                    state.profile.showing = !state.profile.showing;
                     break;
             }
         },
@@ -169,25 +169,25 @@ const settingsSlice = createSlice({
                     state.player.colSpan = action.payload.value;
                     break;
                 case 'queue':
-                    state.player.colSpan = action.payload.value;
+                    state.queue.colSpan = action.payload.value;
                     break;
                 case 'playlist':
-                    state.player.colSpan = action.payload.value;
+                    state.playlist.colSpan = action.payload.value;
                     break;
                 case 'settings':
-                    state.player.colSpan = action.payload.value;
+                    state.settings.colSpan = action.payload.value;
                     break;
                 case 'search':
-                    state.player.colSpan = action.payload.value;
+                    state.search.colSpan = action.payload.value;
                     break;
                 case 'lyrics':
-                    state.player.colSpan = action.payload.value;
+                    state.lyrics.colSpan = action.payload.value;
                     break;
                 case 'heardle':
-                    state.player.colSpan = action.payload.value;
+                    state.heardle.colSpan = action.payload.value;
                     break;
                 case 'profile':
-                    state.player.colSpan = action.payload.value;
+                    state.profile.colSpan = action.payload.value;
                     break;
             }
         },
@@ -197,25 +197,25 @@ const settingsSlice = createSlice({
                     state.player.rowSpan = action.payload.value;
                     break;
                 case 'queue':
-                    state.player.rowSpan = action.payload.value;
+                    state.queue.rowSpan = action.payload.value;
                     break;
                 case 'playlist':
-                    state.player.rowSpan = action.payload.value;
+                    state.playlist.rowSpan = action.payload.value;
                     break;
                 case 'settings':
-                    state.player.rowSpan = action.payload.value;
+                    state.settings.rowSpan = action.payload.value;
                     break;
                 case 'search':
-                    state.player.rowSpan = action.payload.value;
+                    state.search.rowSpan = action.payload.value;
                     break;
                 case 'lyrics':
-                    state.player.rowSpan = action.payload.value;
+                    state.lyrics.rowSpan = action.payload.value;
                     break;
                 case 'heardle':
-                    state.player.rowSpan = action.payload.value;
+                    state.heardle.rowSpan = action.payload.value;
                     break;
                 case 'profile':
-                    state.player.rowSpan = action.payload.value;
+                    state.profile.rowSpan = action.payload.value;
                     break;
             }
         },
@@ -225,25 +225,25 @@ const settingsSlice = createSlice({
                     state.player.width = action.payload.value;
                     break;
                 case 'queue':
-                    state.player.width = action.payload.value;
+                    state.queue.width = action.payload.value;
                     break;
                 case 'playlist':
-                    state.player.width = action.payload.value;
+                    state.playlist.width = action.payload.value;
                     break;
                 case 'settings':
-                    state.player.width = action.payload.value;
+                    state.settings.width = action.payload.value;
                     break;
                 case 'search':
-                    state.player.width = action.payload.value;
+                    state.search.width = action.payload.value;
                     break;
                 case 'lyrics':
-                    state.player.width = action.payload.value;
+                    state.lyrics.width = action.payload.value;
                     break;
                 case 'heardle':
-                    state.player.width = action.payload.value;
+                    state.heardle.width = action.payload.value;
                     break;
                 case 'profile':
-                    state.player.width = action.payload.value;
+                    state.profile.width = action.payload.value;
                     break;
             }
         },
@@ -253,25 +253,25 @@ const settingsSlice = createSlice({
                     state.player.height = action.payload.value;
                     break;
                 case 'queue':
-                    state.player.height = action.payload.value;
+                    state.queue.height = action.payload.value;
                     break;
                 case 'playlist':
-                    state.player.height = action.payload.value;
+                    state.playlist.height = action.payload.value;
                     break;
                 case 'settings':
-                    state.player.height = action.payload.value;
+                    state.settings.height = action.payload.value;
                     break;
                 case 'search':
-                    state.player.height = action.payload.value;
+                    state.search.height = action.payload.value;
                     break;
                 case 'lyrics':
-                    state.player.height = action.payload.value;
+                    state.lyrics.height = action.payload.value;
                     break;
                 case 'heardle':
-                    state.player.height = action.payload.value;
+                    state.heardle.height = action.payload.value;
                     break;
                 case 'profile':
-                    state.player.height = action.payload.value;
+                    state.profile.height = action.payload.value;
                     break;
             }
         }

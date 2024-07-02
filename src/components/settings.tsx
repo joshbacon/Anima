@@ -19,8 +19,10 @@
 // have an option to set the cards to glass or other colors
 // have different background colors too (also upload pictures???)
 
+import { useRef } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../state/store";
+import { colSize, rowSize } from '../constants/grid';
 import { toggleMode, changeColor, toggleShowing, changeColSpan, changeRowSpan, changeWidth, changeHeight } from "../state/settingsSlice";
 
 import { signOut } from "../apicontroller";
@@ -49,39 +51,52 @@ import { signOut } from "../apicontroller";
 
 function Settings() {
 
+    let winWidth = useRef(window.innerWidth);
+    let winHeight = useRef(window.innerHeight);
+
     const { mode, color, player, queue, playlist, settings, search, lyrics, heardle, profile } = useSelector((state: RootState) => state.settings);
     const dispatch = useDispatch();
 
     return <div
         key="Settings"
-        className={
-            `flex flex-col gap-2 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll ` + 
-            ( mode ? `w-full h-full col-span-${settings.colSpan} row-span-${settings.rowSpan}` : `absolute w-[${settings.width}px] h-[${settings.height}px] top-[${settings.posY}px] left-[${settings.posX}px]`)            
-        }
+        style={ mode ? {
+            width: `${colSize(winWidth.current, settings.colSpan)}px`,
+            height: `${rowSize(winHeight.current, settings.rowSpan)}px`,
+        }: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: `${settings.width}px`,
+            height: `${settings.height}px`,
+            transform: `translate(${settings.posX}px, ${settings.posY}px)`
+        }}
+        className={`flex ${(mode && settings.colSpan < settings.rowSpan) || (!mode && settings.width < settings.height) ? 'flex-col ': ''}gap-2 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll transition-all duration-700`}
     >
-        <h2 className="text-xl">
-            Settings
-        </h2>
-        <div className="flex justify-center items-center gap-2 text-center">
-            <button
-                className={`w-full h-full py-1 text-lg font-semibold bg-${color}-600 rounded-md`}
-                onClick={() => dispatch(toggleMode())}
-            >
-                <h2>{mode ? "Snap to Grid" : "Free Form"}</h2>
-            </button>
-        </div>
+        <div className='flex flex-col gap-2'>
+            <h2 className="text-xl">
+                Settings
+            </h2>
+            <div className="flex justify-center items-center gap-2 text-center">
+                <button
+                    className={`w-full h-full py-1 text-lg font-semibold bg-${color}-600 rounded-md`}
+                    onClick={() => dispatch(toggleMode())}
+                >
+                    <h2>{mode ? "Snap to Grid" : "Free Form"}</h2>
+                </button>
+            </div>
 
-        <div className="p-2 rounded-lg hover:bg-eigen hover:bg-opacity-30">
-            <h2 className="mb-2">Color Scheme</h2>
-            <div className="flex justify-start items-center gap-2 flex-wrap">
-                <button onClick={() => dispatch(changeColor("red"))} className="w-5 aspect-square cursor-pointer bg-red-600 rounded-md"/>
-                <button onClick={() => dispatch(changeColor("orange"))} className="w-5 aspect-square cursor-pointer bg-orange-600 rounded-md"/>
-                <button onClick={() => dispatch(changeColor("yellow"))} className="w-5 aspect-square cursor-pointer bg-yellow-600 rounded-md"/>
-                <button onClick={() => dispatch(changeColor("green"))} className="w-5 aspect-square cursor-pointer bg-green-600 rounded-md"/>
-                <button onClick={() => dispatch(changeColor("sky"))} className="w-5 aspect-square cursor-pointer bg-sky-600 rounded-md"/>
-                <button onClick={() => dispatch(changeColor("blue"))} className="w-5 aspect-square cursor-pointer bg-blue-600 rounded-md"/>
-                <button onClick={() => dispatch(changeColor("purple"))} className="w-5 aspect-square cursor-pointer bg-purple-600 rounded-md"/>
-                <button onClick={() => dispatch(changeColor("pink"))} className="w-5 aspect-square cursor-pointer bg-pink-600 rounded-md"/>
+            <div className="p-2 rounded-lg hover:bg-eigen hover:bg-opacity-30">
+                <h2 className="mb-2">Color Scheme</h2>
+                <div className="flex justify-start items-center gap-2 flex-wrap">
+                    <button onClick={() => dispatch(changeColor("red"))} className="w-5 aspect-square cursor-pointer bg-red-600 rounded-md"/>
+                    <button onClick={() => dispatch(changeColor("orange"))} className="w-5 aspect-square cursor-pointer bg-orange-600 rounded-md"/>
+                    <button onClick={() => dispatch(changeColor("yellow"))} className="w-5 aspect-square cursor-pointer bg-yellow-600 rounded-md"/>
+                    <button onClick={() => dispatch(changeColor("green"))} className="w-5 aspect-square cursor-pointer bg-green-600 rounded-md"/>
+                    <button onClick={() => dispatch(changeColor("sky"))} className="w-5 aspect-square cursor-pointer bg-sky-600 rounded-md"/>
+                    <button onClick={() => dispatch(changeColor("blue"))} className="w-5 aspect-square cursor-pointer bg-blue-600 rounded-md"/>
+                    <button onClick={() => dispatch(changeColor("purple"))} className="w-5 aspect-square cursor-pointer bg-purple-600 rounded-md"/>
+                    <button onClick={() => dispatch(changeColor("pink"))} className="w-5 aspect-square cursor-pointer bg-pink-600 rounded-md"/>
+                </div>
             </div>
         </div>
 
@@ -108,6 +123,7 @@ function Settings() {
                         type="number"
                         className="w-11 rounded-lg text-center"
                         value={player.colSpan}
+                        min={3}
                         title="columns"
                         onChange={(e) => {dispatch(changeColSpan({id: "player", value: +e.target.value}))}}
                     />
@@ -116,6 +132,7 @@ function Settings() {
                         type="number"
                         className="w-11 rounded-lg text-center"
                         value={player.rowSpan}
+                        min={2}
                         title="rows"
                         onChange={(e) => {dispatch(changeRowSpan({id: "player", value: +e.target.value}))}}
                     />
@@ -129,6 +146,7 @@ function Settings() {
                         type="number"
                         className="w-14 rounded-lg text-center"
                         value={player.width}
+                        min={2}
                         title="width"
                         onChange={(e) => {dispatch(changeWidth({id: "player", value: +e.target.value}))}}
                     />
@@ -137,6 +155,7 @@ function Settings() {
                         type="number"
                         className="w-14 rounded-lg text-center"
                         value={player.height}
+                        min={4}
                         title="height"
                         onChange={(e) => {dispatch(changeHeight({id: "player", value: +e.target.value}))}}
                     />
@@ -539,7 +558,7 @@ function Settings() {
         
         <div className="flex justify-center items-center gap-2 w-full text-center">
             <button
-                className={`w-full h-full py-1 text-lg font-semibold bg-${color}-600 rounded-md`}
+                className={`w-full h-full px-3 py-1 text-lg font-semibold bg-${color}-600 rounded-md`}
                 onClick={signOut}
             >
                 <h2>Sign Out</h2>

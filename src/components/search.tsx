@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import { colSize, rowSize } from '../constants/grid';
 
 import info from '../assets/info.svg';
 import album from '../assets/album.svg';
@@ -30,6 +31,9 @@ function searchItem(key:number, callback:any) {
 
 // make this a child of the draggable class
 function Search() {
+
+    let winWidth = useRef(window.innerWidth);
+    let winHeight = useRef(window.innerHeight);
     
     const { mode, color, search } = useSelector((state: RootState) => state.settings);
 
@@ -52,10 +56,18 @@ function Search() {
 
     return <div
         key="Search"
-        className={
-            `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden ` + 
-            (mode ? `w-full h-full col-span-${search.colSpan} row-span-${search.rowSpan}` : `absolute w-[${search.width}px] h-[${search.height}px] top-[${search.posY}px] left-[${search.posX}px]`)
-        }
+        style={ mode ? {
+            width: `${colSize(winWidth.current, search.colSpan)}px`,
+            height: `${rowSize(winHeight.current, search.rowSpan)}px`,
+        }: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: `${search.width}px`,
+            height: `${search.height}px`,
+            transform: `translate(${search.posX}px, ${search.posY}px)`,
+        }}
+        className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
     >
         <input
             type="text"

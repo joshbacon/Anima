@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import { colSize, rowSize } from '../constants/grid';
 
-import { getProfile } from '../apicontroller';
+import { setProfile, setTopItems } from '../apicontroller';
 
 import account from '../assets/account.svg';
 import album from '../assets/album.svg';
@@ -12,10 +13,14 @@ import info from '../assets/info.svg';
 // make this a child of the draggable class
 function Profile() {
 
+    let winWidth = useRef(window.innerWidth);
+    let winHeight = useRef(window.innerHeight);
+
     useEffect(() => {
         // figure out where to load this... right now when the component is loaded
         // it calls again but we really just need one on initial load ofthe page
-        getProfile();
+        setProfile();
+        setTopItems('short_term');
     }, []);
     
     const { mode, color, profile } = useSelector((state: RootState) => state.settings);
@@ -41,14 +46,27 @@ function Profile() {
 
     return <div
         key="Profile"
-        className={
-            `flex flex-col gap-4 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll ` +
-            ( mode ? `w-full h-full col-span-${profile.colSpan} row-span-${profile.rowSpan}` : `absolute w-[${profile.width}px] h-[${profile.height}px] top-[${profile.posY}px] left-[${profile.posX}px]`)
-        }
+        style={ mode ? {
+            width: `${colSize(winWidth.current, profile.colSpan)}px`,
+            height: `${rowSize(winHeight.current, profile.rowSpan)}px`,
+        }: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: `${profile.width}px`,
+            height: `${profile.height}px`,
+            transform: `translate(${profile.posX}px, ${profile.posY}px)`
+        }}
+        className={`flex flex-col gap-4 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll transition-all duration-700`}
     >
         <div className='flex justify-start items-center gap-3'>
             <img src={account} alt="" />
-            <h2 className='text-xl'>Profile</h2>
+            <h2 className='text-xl'>{localStorage.getItem('name')}</h2>
+            <select name="categories" id="categories" className='ml-auto' onChange={(e) => {setTopItems(e.target.value)}}>
+                <option value="short_term">Short Term</option>
+                <option value="medium_term">Medium Term</option>
+                <option value="long_term">Long Term</option>
+            </select>
         </div>
         <div>
             <h2 className='text-lg'>Top artists this month</h2>

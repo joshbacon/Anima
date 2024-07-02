@@ -1,19 +1,31 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import { colSize, rowSize } from '../constants/grid';
 
 // make this a child of the draggable class
 function Lyrics() {
+
+    let winWidth = useRef(window.innerWidth);
+    let winHeight = useRef(window.innerHeight);
     
     const { mode, color, lyrics } = useSelector((state: RootState) => state.settings);
 
     return <div
         key="Lyrics"
-        className={
-            `bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll p-3 ` + 
-            (mode ? `w-full h-full col-span-${lyrics.colSpan} row-span-${lyrics.rowSpan}` : `absolute w-[${lyrics.width}px] h-[${lyrics.height}px] top-[${lyrics.posY}px] left-[${lyrics.posX}px]`)
-        }
+        style={ mode ? {
+            width: `${colSize(winWidth.current, lyrics.colSpan)}px`,
+            height: `${rowSize(winHeight.current, lyrics.rowSpan)}px`,
+        }: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: `${lyrics.width}px`,
+            height: `${lyrics.height}px`,
+            transform: `translate(${lyrics.posX}px, ${lyrics.posY}px)`
+        }}
+        className={`min-w-[225px] bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll p-3 transition-all duration-700`}
     >
         <h2>
             [Verse 1]

@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import { colSize, rowSize } from '../constants/grid';
 
 import play from '../assets/play.svg';
 import pause from '../assets/pause.svg';
@@ -9,9 +10,13 @@ import previous from '../assets/previous.svg';
 import next from '../assets/next.svg';
 import volume from '../assets/volume.svg';
 import mute from '../assets/mute.svg';
+import { getCurrentlyPlaying } from '../apicontroller';
 
 // make this a child of the draggable class
 function Player() {
+
+    let winWidth = useRef(window.innerWidth);
+    let winHeight = useRef(window.innerHeight);
 
     const { mode, color, player } = useSelector((state: RootState) => state.settings);
 
@@ -21,7 +26,7 @@ function Player() {
 
     const [songLength, setSongLength] = useState<number>(300);
     const [timePlaying, setTimePlaying] = useState<number>(120);
-    
+
     function nextSong() {
         
     }
@@ -30,12 +35,26 @@ function Player() {
         
     }
 
+    // need to set a min w/h for each individual component
+    //  - set in the class of each
+    //  - set in the settings input boxes (span and custom)
+    //  - set as the initial state in the settingsSlice
+    // look into mosaic libraries for a better fit of components
+
     return <div
         key="Player"
-        className={
-            `flex justify-evenly items-center gap-5 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl p-3 ` +
-            (mode ? `w-full h-full col-span-${player.colSpan} row-span-${player.rowSpan}` : `absolute w-[${player.width}px] h-[${player.height}px] top-[${player.posY}px] left-[${player.posX}px]`) 
-        }
+        style={ mode ? {
+            width: `${colSize(winWidth.current, player.colSpan)}px`,
+            height: `${rowSize(winHeight.current, player.rowSpan)}px`,
+        }: {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: `${player.width}px`,
+            height: `${player.height}px`,
+            transform: `translate(${player.posX}px, ${player.posY}px)`,
+        }}
+        className={`flex justify-evenly items-center gap-5 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl p-3 transition-all duration-700`}
     >
         <div className='flex'>
             <div className='flex flex-col'>

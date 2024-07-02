@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 
 import { setToken } from './apicontroller';
 
@@ -31,17 +31,24 @@ function App() {
   //       - just figure out how often to write to localStorage
   //         (basically whenever a setting or position is changed)
   const state = useSelector((state: RootState) => state.settings);
-  console.log(JSON.stringify(state));
+  // console.log(JSON.stringify(state));
 
 
 
+  let winWidth = useRef(window.innerWidth);
+  let winHeight = useRef(window.innerHeight);
 
   const { mode, player, queue, playlist, settings, search, lyrics, heardle, profile } = useSelector((state: RootState) => state.settings);
 
   const [signedIn, setSignedIn] = useState<boolean>(false);
 
-  useEffect(() => {
+  function setScreenSize() {
+    localStorage.setItem('winWidth', `${winWidth.current}`);
+    localStorage.setItem('winHeight', `${winHeight.current}`);
+  }
 
+  useEffect(() => {
+    setScreenSize();
     // Show the dashboard if they are already signed in and have a token
     if (localStorage.getItem('token')){
       // looks like the token expires so look into reloading it before setting signedIn
@@ -56,7 +63,6 @@ function App() {
         });
       }
     }
-
   }, []);
 
 
@@ -76,8 +82,8 @@ function App() {
   return <div
     key="main"
     className={
-      `w-screen h-screen overflow-auto p-3 font-main ` +
-      ( mode ? 'inline-grid place-items-center gap-3 grid-cols-6 grid-rows-6 col-span' : '')
+      `w-screen h-screen overflow-auto p-3 font-main ` + 'flex flex-wrap gap-3'
+      // ( mode ? 'inline-grid place-items-center gap-3 grid-cols-6' : '')
     }
   >
     { !signedIn ?

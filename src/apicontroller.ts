@@ -5,10 +5,10 @@ import axios from "axios";
 
 import { Buffer } from "buffer";
 
-export var VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
-export var VITE_REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
-export var VITE_AUTH_ENDPOINT = import.meta.env.VITE_AUTH_ENDPOINT;
-export var VITE_SECRET = import.meta.env.VITE_SECRET;
+export let VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
+export let VITE_REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
+export let VITE_AUTH_ENDPOINT = import.meta.env.VITE_AUTH_ENDPOINT;
+export let VITE_SECRET = import.meta.env.VITE_SECRET;
 
 export async function setToken() {
     let paramsAfter = new URLSearchParams(window.location.search);
@@ -47,7 +47,7 @@ export async function redirectToAuth() {
     params.append("client_id", VITE_CLIENT_ID);
     params.append("response_type", "code");
     params.append("redirect_uri", "http://localhost:5173");
-    params.append("scope", "user-read-private user-read-email");
+    params.append("scope", "user-read-private user-read-email user-read-currently-playing playlist-read-private user-top-read");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
@@ -79,11 +79,59 @@ export function signOut() {
     document.location = "http://localhost:5173";
 }
 
-export async function getProfile() {
+export async function getCurrentlyPlaying() {
+    axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    })
+        .then(res => {
+            return res.data;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export async function getPlaylists() {
+    axios.get("https://api.spotify.com/v1/me/playlists", {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    })
+        .then(res => {
+            return res.data;
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export async function setProfile() {
     axios.get("https://api.spotify.com/v1/me", {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
         .then(res => {
+            localStorage.setItem('name', res.data.display_name);
+            console.log(res);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export async function setTopItems(range:string) {
+    axios.get(`https://api.spotify.com/v1/me/top/artists?time_range=${range}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    })
+        .then(res => {
+            // localStorage.setItem('name', res.data.display_name);
+            console.log(res);
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    axios.get(`https://api.spotify.com/v1/me/top/tracks?time_range=${range}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    })
+        .then(res => {
+            // localStorage.setItem('name', res.data.display_name);
             console.log(res);
         })
         .catch(err => {
