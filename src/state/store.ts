@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import profileReducer from './profileSlice';
 import settingsReducer from './settingsSlice';
 
 
@@ -7,6 +8,7 @@ import settingsReducer from './settingsSlice';
 
 export const store = configureStore({
     reducer: {
+        profile: profileReducer,
         settings: settingsReducer,
     }
 });

@@ -2,8 +2,8 @@
 // https://developer.spotify.com/documentation/web-api/howtos/web-app-profile
 
 import axios from "axios";
-
 import { Buffer } from "buffer";
+import { TrackData, ArtistData, AlbumData } from './state/interfaces';
 
 export let VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 export let VITE_REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
@@ -103,38 +103,62 @@ export async function getPlaylists() {
         });
 }
 
-export async function setProfile() {
-    axios.get("https://api.spotify.com/v1/me", {
+export async function getProfile():Promise<string> {
+    return axios.get("https://api.spotify.com/v1/me", {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
         .then(res => {
-            localStorage.setItem('name', res.data.display_name);
-            console.log(res);
+            return res.data.display_name;
         })
         .catch(err => {
+            // for error handling, return this and check for it in profile component
             console.log(err);
         });
 }
 
-export async function setTopItems(range:string) {
-    axios.get(`https://api.spotify.com/v1/me/top/artists?time_range=${range}`, {
+export async function getTopArtists(range:string):Promise<ArtistData[]> {
+    return axios.get(`https://api.spotify.com/v1/me/top/artists?time_range=${range}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
         .then(res => {
-            // localStorage.setItem('name', res.data.display_name);
-            console.log(res);
+            return res.data.items.map((artist: any) => {
+                let { name, images, id } = artist;
+                return {
+                    id: id,
+                    name: name,
+                    images: images,
+                }
+            });
         })
         .catch(err => {
+            // for error handling, return this and check for it in profile component
             console.log(err);
         });
-    axios.get(`https://api.spotify.com/v1/me/top/tracks?time_range=${range}`, {
+}
+
+export async function getTopTracks(range:string):Promise<TrackData[]> {
+    return axios.get(`https://api.spotify.com/v1/me/top/tracks?time_range=${range}`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
         .then(res => {
-            // localStorage.setItem('name', res.data.display_name);
-            console.log(res);
+            return res.data.items.map((artist: any) => {
+                let { name, duration_ms, artists, album, id } = artist;
+                return {
+                    id: id,
+                    track: name,
+                    duration: duration_ms,
+                    artist: {
+                        id: artists[0].id,
+                        name: artists[0].name,
+                        images: artists[0].images,
+                    },
+                    images: album.images,
+                    albumId: album.id
+                }
+            });
         })
         .catch(err => {
+            // for error handling, return this and check for it in profile component
             console.log(err);
         });
 }
