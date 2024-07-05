@@ -3,16 +3,17 @@
 export interface ImageData {
     width: number,
     height: number,
-    link: string,
+    url: string,
 }
 
 export interface TrackData {
     id: string,
-    track: string,
+    name: string,
     duration: number,
     artist: ArtistData,
     images: ImageData[],
     albumID: string,
+    explicit: boolean,
 }
 
 export interface ArtistData {
@@ -30,4 +31,12 @@ export interface AlbumData {
     images: ImageData[],
     albumLink: string,
     id: string,
+}
+
+export interface PlaylistData {
+    id: string;
+    name: string;
+    images: ImageData[];
+    tracks: number
+    description: string;
 }

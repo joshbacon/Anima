@@ -14,7 +14,7 @@ import { getCurrentlyPlaying } from '../apicontroller';
 // make this a child of the draggable class
 function Player() {
 
-    const { mode, color, player } = useSelector((state: RootState) => state.settings);
+    const { mode, color, playerData } = useSelector((state: RootState) => state.settings);
 
     const [playing, setPlaying] = useState<boolean>(false);
     const [currVolume, setCurrVolume] = useState<number>(50);
@@ -36,15 +36,15 @@ function Player() {
         style={ mode ? {
             width: `100%`,
             height: `100%`,
-            gridColumn: `span ${player.colSpan}`,
-            gridRow: `span ${player.rowSpan}`
+            gridColumn: `span ${playerData.colSpan}`,
+            gridRow: `span ${playerData.rowSpan}`
         } : {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: `${player.width}px`,
-            height: `${player.height}px`,
-            transform: `translate(${player.posX}px, ${player.posY}px)`,
+            width: `${playerData.width}px`,
+            height: `${playerData.height}px`,
+            transform: `translate(${playerData.posX}px, ${playerData.posY}px)`,
         }}
         className={`flex justify-evenly items-center gap-5 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl p-3 transition-all duration-700`}
     >

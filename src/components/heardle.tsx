@@ -10,22 +10,22 @@ import wrong from '../assets/wrong.svg';
 // make this a child of the draggable class
 function Heardle() {
     
-    const { mode, color, heardle} = useSelector((state: RootState) => state.settings);
+    const { mode, color, heardleData } = useSelector((state: RootState) => state.settings);
 
     return <div
         key="Heardle"
         style={ mode ? {
             width: `100%`,
             height: `100%`,
-            gridColumn: `span ${heardle.colSpan}`,
-            gridRow: `span ${heardle.rowSpan}`
+            gridColumn: `span ${heardleData.colSpan}`,
+            gridRow: `span ${heardleData.rowSpan}`
         }: {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: `${heardle.width}px`,
-            height: `${heardle.height}px`,
-            transform: `translate(${heardle.posX}px, ${heardle.posY}px)`
+            width: `${heardleData.width}px`,
+            height: `${heardleData.height}px`,
+            transform: `translate(${heardleData.posX}px, ${heardleData.posY}px)`
         }}
         className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-auto transition-all duration-700`}
     >

@@ -102,27 +102,27 @@ const initialProfile:ComponentState = {
 interface SettingsState {
     mode: boolean;
     color: string;
-    player: ComponentState;
-    queue: ComponentState;
-    playlist: ComponentState;
-    settings: ComponentState;
-    search: ComponentState;
-    lyrics: ComponentState;
-    heardle: ComponentState;
-    profile: ComponentState;
+    playerData: ComponentState;
+    queueData: ComponentState;
+    playlistData: ComponentState;
+    settingsData: ComponentState;
+    searchData: ComponentState;
+    lyricsData: ComponentState;
+    heardleData: ComponentState;
+    profileData: ComponentState;
 }
 
 const initialState:SettingsState = {
     mode: true,
     color: "purple",
-    player: initialPlayer,
-    queue: initialQueue,
-    playlist: initialPlaylist,
-    settings: initialSettings,
-    search: initialSearch,
-    lyrics: initialLyrics,
-    heardle: initialHeardle,
-    profile: initialProfile,
+    playerData: initialPlayer,
+    queueData: initialQueue,
+    playlistData: initialPlaylist,
+    settingsData: initialSettings,
+    searchData: initialSearch,
+    lyricsData: initialLyrics,
+    heardleData: initialHeardle,
+    profileData: initialProfile,
 };
 
 const settingsSlice = createSlice({
@@ -138,140 +138,140 @@ const settingsSlice = createSlice({
         toggleShowing: (state, action: PayloadAction<string>) => {
             switch (action.payload) {
                 case 'player':
-                    state.player.showing = !state.player.showing;
+                    state.playerData.showing = !state.playerData.showing;
                     break;
                 case 'queue':
-                    state.queue.showing = !state.queue.showing;
+                    state.queueData.showing = !state.queueData.showing;
                     break;
                 case 'playlist':
-                    state.playlist.showing = !state.playlist.showing;
+                    state.playlistData.showing = !state.playlistData.showing;
                     break;
                 case 'settings':
-                    state.settings.showing = !state.settings.showing;
+                    state.settingsData.showing = !state.settingsData.showing;
                     break;
                 case 'search':
-                    state.search.showing = !state.search.showing;
+                    state.searchData.showing = !state.searchData.showing;
                     break;
                 case 'lyrics':
-                    state.lyrics.showing = !state.lyrics.showing;
+                    state.lyricsData.showing = !state.lyricsData.showing;
                     break;
                 case 'heardle':
-                    state.heardle.showing = !state.heardle.showing;
+                    state.heardleData.showing = !state.heardleData.showing;
                     break;
                 case 'profile':
-                    state.profile.showing = !state.profile.showing;
+                    state.profileData.showing = !state.profileData.showing;
                     break;
             }
         },
         changeColSpan: (state, action: PayloadAction<{id: string, value: number}>) => {
             switch (action.payload.id) {
                 case 'player':
-                    state.player.colSpan = action.payload.value;
+                    state.playerData.colSpan = action.payload.value;
                     break;
                 case 'queue':
-                    state.queue.colSpan = action.payload.value;
+                    state.queueData.colSpan = action.payload.value;
                     break;
                 case 'playlist':
-                    state.playlist.colSpan = action.payload.value;
+                    state.playlistData.colSpan = action.payload.value;
                     break;
                 case 'settings':
-                    state.settings.colSpan = action.payload.value;
+                    state.settingsData.colSpan = action.payload.value;
                     break;
                 case 'search':
-                    state.search.colSpan = action.payload.value;
+                    state.searchData.colSpan = action.payload.value;
                     break;
                 case 'lyrics':
-                    state.lyrics.colSpan = action.payload.value;
+                    state.lyricsData.colSpan = action.payload.value;
                     break;
                 case 'heardle':
-                    state.heardle.colSpan = action.payload.value;
+                    state.heardleData.colSpan = action.payload.value;
                     break;
                 case 'profile':
-                    state.profile.colSpan = action.payload.value;
+                    state.profileData.colSpan = action.payload.value;
                     break;
             }
         },
         changeRowSpan: (state, action: PayloadAction<{id: string, value: number}>) => {
             switch (action.payload.id) {
                 case 'player':
-                    state.player.rowSpan = action.payload.value;
+                    state.playerData.rowSpan = action.payload.value;
                     break;
                 case 'queue':
-                    state.queue.rowSpan = action.payload.value;
+                    state.queueData.rowSpan = action.payload.value;
                     break;
                 case 'playlist':
-                    state.playlist.rowSpan = action.payload.value;
+                    state.playlistData.rowSpan = action.payload.value;
                     break;
                 case 'settings':
-                    state.settings.rowSpan = action.payload.value;
+                    state.settingsData.rowSpan = action.payload.value;
                     break;
                 case 'search':
-                    state.search.rowSpan = action.payload.value;
+                    state.searchData.rowSpan = action.payload.value;
                     break;
                 case 'lyrics':
-                    state.lyrics.rowSpan = action.payload.value;
+                    state.lyricsData.rowSpan = action.payload.value;
                     break;
                 case 'heardle':
-                    state.heardle.rowSpan = action.payload.value;
+                    state.heardleData.rowSpan = action.payload.value;
                     break;
                 case 'profile':
-                    state.profile.rowSpan = action.payload.value;
+                    state.profileData.rowSpan = action.payload.value;
                     break;
             }
         },
         changeWidth: (state, action: PayloadAction<{id: string, value: number}>) => {
             switch (action.payload.id) {
                 case 'player':
-                    state.player.width = action.payload.value;
+                    state.playerData.width = action.payload.value;
                     break;
                 case 'queue':
-                    state.queue.width = action.payload.value;
+                    state.queueData.width = action.payload.value;
                     break;
                 case 'playlist':
-                    state.playlist.width = action.payload.value;
+                    state.playlistData.width = action.payload.value;
                     break;
                 case 'settings':
-                    state.settings.width = action.payload.value;
+                    state.settingsData.width = action.payload.value;
                     break;
                 case 'search':
-                    state.search.width = action.payload.value;
+                    state.searchData.width = action.payload.value;
                     break;
                 case 'lyrics':
-                    state.lyrics.width = action.payload.value;
+                    state.lyricsData.width = action.payload.value;
                     break;
                 case 'heardle':
-                    state.heardle.width = action.payload.value;
+                    state.heardleData.width = action.payload.value;
                     break;
                 case 'profile':
-                    state.profile.width = action.payload.value;
+                    state.profileData.width = action.payload.value;
                     break;
             }
         },
         changeHeight: (state, action: PayloadAction<{id: string, value: number}>) => {
             switch (action.payload.id) {
                 case 'player':
-                    state.player.height = action.payload.value;
+                    state.playerData.height = action.payload.value;
                     break;
                 case 'queue':
-                    state.queue.height = action.payload.value;
+                    state.queueData.height = action.payload.value;
                     break;
                 case 'playlist':
-                    state.playlist.height = action.payload.value;
+                    state.playlistData.height = action.payload.value;
                     break;
                 case 'settings':
-                    state.settings.height = action.payload.value;
+                    state.settingsData.height = action.payload.value;
                     break;
                 case 'search':
-                    state.search.height = action.payload.value;
+                    state.searchData.height = action.payload.value;
                     break;
                 case 'lyrics':
-                    state.lyrics.height = action.payload.value;
+                    state.lyricsData.height = action.payload.value;
                     break;
                 case 'heardle':
-                    state.heardle.height = action.payload.value;
+                    state.heardleData.height = action.payload.value;
                     break;
                 case 'profile':
-                    state.profile.height = action.payload.value;
+                    state.profileData.height = action.payload.value;
                     break;
             }
         }

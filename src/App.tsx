@@ -25,7 +25,7 @@ interface Component {
 
 function App() {
 
-  const { mode, player, queue, playlist, settings, search, lyrics, heardle, profile } = useSelector((state: RootState) => state.settings);
+  const { mode, playerData, queueData, playlistData, settingsData, searchData, lyricsData, heardleData, profileData } = useSelector((state: RootState) => state.settings);
 
   const [signedIn, setSignedIn] = useState<boolean>(false);
 
@@ -49,14 +49,14 @@ function App() {
 
   // need to rethink this whole mapping concept now that redux is setup
   const [componentList, setComponentList] = useState<Component[]>([
-    { id: "Player",   index: 0, showing: player.showing,   component: <Player />   },
-    { id: "Queue",    index: 1, showing: queue.showing,    component: <Queue />    },
-    { id: "Playlist", index: 2, showing: playlist.showing, component: <Playlist /> },
-    { id: "Settings", index: 3, showing: settings.showing, component: <Settings /> },
-    { id: "Search",   index: 4, showing: search.showing,   component: <Search />   },
-    { id: "Lyrics",   index: 5, showing: lyrics.showing,   component: <Lyrics />   },
-    { id: "Heardle",  index: 6, showing: heardle.showing,  component: <Heardle />  },
-    { id: "Profile",  index: 7, showing: profile.showing,  component: <Profile />  }
+    { id: "Player",   index: 0, showing: playerData.showing,   component: <Player />   },
+    { id: "Queue",    index: 1, showing: queueData.showing,    component: <Queue />    },
+    { id: "Playlist", index: 2, showing: playlistData.showing, component: <Playlist /> },
+    { id: "Settings", index: 3, showing: settingsData.showing, component: <Settings /> },
+    { id: "Search",   index: 4, showing: searchData.showing,   component: <Search />   },
+    { id: "Lyrics",   index: 5, showing: lyricsData.showing,   component: <Lyrics />   },
+    { id: "Heardle",  index: 6, showing: heardleData.showing,  component: <Heardle />  },
+    { id: "Profile",  index: 7, showing: profileData.showing,  component: <Profile />  }
   ]);
 
   return <div

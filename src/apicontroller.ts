@@ -3,7 +3,8 @@
 
 import axios from "axios";
 import { Buffer } from "buffer";
-import { TrackData, ArtistData, AlbumData } from './state/interfaces';
+import { TrackData, ArtistData, PlaylistData } from './state/interfaces';
+
 
 export let VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 export let VITE_REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
@@ -47,7 +48,7 @@ export async function redirectToAuth() {
     params.append("client_id", VITE_CLIENT_ID);
     params.append("response_type", "code");
     params.append("redirect_uri", "http://localhost:5173");
-    params.append("scope", "user-read-private user-read-email user-read-currently-playing playlist-read-private user-top-read");
+    params.append("scope", "user-read-private user-read-email user-read-currently-playing user-read-playback-state playlist-read-private user-top-read");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
@@ -91,12 +92,48 @@ export async function getCurrentlyPlaying() {
         });
 }
 
-export async function getPlaylists() {
-    axios.get("https://api.spotify.com/v1/me/playlists", {
+export async function getPlaylists():Promise<PlaylistData[]> {
+    return axios.get("https://api.spotify.com/v1/me/playlists", {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
         .then(res => {
-            return res.data;
+            return res.data.items.map((playlist: any) => {
+                let { name, images, id, tracks, description } = playlist;
+                return {
+                    id: id,
+                    name: name,
+                    images: images,
+                    tracks: tracks.total,
+                    description: description,
+                }
+            });
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+export async function getQueue():Promise<TrackData[]> {
+    return axios.get("https://api.spotify.com/v1/me/player/queue", {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    })
+        .then(res => {
+            return res.data.queue.map((track: any) => {
+                let { name, duration_ms, artists, album, id, explicit } = track;
+                return {
+                    id: id,
+                    name: name,
+                    duration: duration_ms,
+                    artist: {
+                        id: artists[0].id,
+                        name: artists[0].name,
+                        images: artists[0].images,
+                    },
+                    images: album.images,
+                    albumId: album.id,
+                    explicit: explicit,
+                }
+            });
         })
         .catch(err => {
             console.log(err);
@@ -117,7 +154,7 @@ export async function getProfile():Promise<string> {
 }
 
 export async function getTopArtists(range:string):Promise<ArtistData[]> {
-    return axios.get(`https://api.spotify.com/v1/me/top/artists?time_range=${range}`, {
+    return axios.get(`https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=3`, {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
         .then(res => {
@@ -141,11 +178,11 @@ export async function getTopTracks(range:string):Promise<TrackData[]> {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
         .then(res => {
-            return res.data.items.map((artist: any) => {
-                let { name, duration_ms, artists, album, id } = artist;
+            return res.data.items.map((track: any) => {
+                let { name, duration_ms, artists, album, id, explicit } = track;
                 return {
                     id: id,
-                    track: name,
+                    name: name,
                     duration: duration_ms,
                     artist: {
                         id: artists[0].id,
@@ -153,7 +190,8 @@ export async function getTopTracks(range:string):Promise<TrackData[]> {
                         images: artists[0].images,
                     },
                     images: album.images,
-                    albumId: album.id
+                    albumId: album.id,
+                    explicit: explicit,
                 }
             });
         })

@@ -3,25 +3,30 @@ import { useState, useRef } from 'react';
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 
+
+// look into Musixmatch for the lyrics (that's what spotify uses and it's suppose to sync with playback)
+
+
+
 // make this a child of the draggable class
 function Lyrics() {
     
-    const { mode, color, lyrics } = useSelector((state: RootState) => state.settings);
+    const { mode, color, lyricsData } = useSelector((state: RootState) => state.settings);
 
     return <div
         key="Lyrics"
         style={ mode ? {
             width: `100%`,
             height: `100%`,
-            gridColumn: `span ${lyrics.colSpan}`,
-            gridRow: `span ${lyrics.rowSpan}`
+            gridColumn: `span ${lyricsData.colSpan}`,
+            gridRow: `span ${lyricsData.rowSpan}`
         }: {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: `${lyrics.width}px`,
-            height: `${lyrics.height}px`,
-            transform: `translate(${lyrics.posX}px, ${lyrics.posY}px)`
+            width: `${lyricsData.width}px`,
+            height: `${lyricsData.height}px`,
+            transform: `translate(${lyricsData.posX}px, ${lyricsData.posY}px)`
         }}
         className={`bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll p-3 transition-all duration-700`}
     >

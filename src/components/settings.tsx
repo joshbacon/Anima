@@ -30,7 +30,7 @@ import { signOut } from "../apicontroller";
 
 // function updateShowing(id:string, isShowing:boolean) {
 //     let tempList:Component[] = [...componentList];
-//     tempList[tempList.map(c => c.id).indexOf(id)].showing = isShowing;
+//     tempList[tempList.map(c => c.id).indexOf(id)]Data.showing = isShowing;
 //     setComponentList(tempList);
 // }
 
@@ -51,7 +51,7 @@ import { signOut } from "../apicontroller";
 function Settings() {
 
     const state = useSelector((state: RootState) => state.settings);
-    const { mode, color, player, queue, playlist, settings, search, lyrics, heardle, profile } = state;
+    const { mode, color, playerData, queueData, playlistData, settingsData, searchData, lyricsData, heardleData, profileData } = state;
     const dispatch = useDispatch();
 
     return <div
@@ -59,17 +59,17 @@ function Settings() {
         style={ mode ? {
             width: `100%`,
             height: `100%`,
-            gridColumn: `span ${settings.colSpan}`,
-            gridRow: `span ${settings.rowSpan}`
+            gridColumn: `span ${settingsData.colSpan}`,
+            gridRow: `span ${settingsData.rowSpan}`
         }: {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: `${settings.width}px`,
-            height: `${settings.height}px`,
-            transform: `translate(${settings.posX}px, ${settings.posY}px)`
+            width: `${settingsData.width}px`,
+            height: `${settingsData.height}px`,
+            transform: `translate(${settingsData.posX}px, ${settingsData.posY}px)`
         }}
-        className={`flex ${(mode && settings.colSpan < settings.rowSpan) || (!mode && settings.width < settings.height) ? 'flex-col': ''} gap-2 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll transition-all duration-700`}
+        className={`flex ${(mode && settingsData.colSpan < settingsData.rowSpan) || (!mode && settingsData.width < settingsData.height) ? 'flex-col': ''} gap-2 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll transition-all duration-700`}
     >
         <div className='flex flex-col gap-2'>
             <h2 className="text-xl">
@@ -119,10 +119,10 @@ function Settings() {
                         id="playerComponent"
                         name="playerComponent"
                         value="Player"
-                        defaultChecked={player.showing}
+                        defaultChecked={playerData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("player"));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...player, showing: !player.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, showing: !playerData.showing}}));
                         }}
                     />
                     <label htmlFor="playerComponent" className="pl-2">Show/Hide</label>
@@ -135,24 +135,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={player.colSpan}
+                        value={playerData.colSpan}
                         min={3}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "player", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...player, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={player.rowSpan}
+                        value={playerData.rowSpan}
                         min={1}
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "player", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...player, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -164,24 +164,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={player.width}
+                        value={playerData.width}
                         min={500}
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "player", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...player, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={player.height}
+                        value={playerData.height}
                         min={100}
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "player", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...player, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -196,10 +196,10 @@ function Settings() {
                         id="queueComponent"
                         name="queueComponent"
                         value="Queue"
-                        defaultChecked={queue.showing}
+                        defaultChecked={queueData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("queue"));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queue, showing: !queue.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, showing: !queueData.showing}}));
                         }}
                     />
                     <label htmlFor="queueComponent" className="pl-2">Show/Hide</label>
@@ -212,24 +212,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={queue.colSpan}
+                        value={queueData.colSpan}
                         min={1}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "queue", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queue, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={queue.rowSpan}
+                        value={queueData.rowSpan}
                         min={2}
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "queue", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queue, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -241,24 +241,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={queue.width}
+                        value={queueData.width}
                         min={200}
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "queue", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queue, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={queue.height}
+                        value={queueData.height}
                         min={200}
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "queue", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queue, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -273,10 +273,10 @@ function Settings() {
                         id="playlistComponent"
                         name="playlistComponent"
                         value="Playlist"
-                        defaultChecked={playlist.showing}
+                        defaultChecked={playlistData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("playlist"));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlist, showing: !playlist.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, showing: !playlistData.showing}}));
                         }}
                     />
                     <label htmlFor="playlistComponent" className="pl-2">Show/Hide</label>
@@ -289,24 +289,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={playlist.colSpan}
+                        value={playlistData.colSpan}
                         min={1}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "playlist", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlist, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={playlist.rowSpan}
+                        value={playlistData.rowSpan}
                         min={2}
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "playlist", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlist, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -318,24 +318,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={playlist.width}
+                        value={playlistData.width}
                         min={200}
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "playlist", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlist, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={playlist.height}
+                        value={playlistData.height}
                         min={200}
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "playlist", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlist, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -350,10 +350,10 @@ function Settings() {
                         id="searchComponent"
                         name="searchComponent"
                         value="Search"
-                        defaultChecked={search.showing}
+                        defaultChecked={searchData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("search"));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...search, showing: !search.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, showing: !searchData.showing}}));
                         }}
                     />
                     <label htmlFor="searchComponent" className="pl-2">Show/Hide</label>
@@ -366,24 +366,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={search.colSpan}
+                        value={searchData.colSpan}
                         min={2}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "search", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...search, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={search.rowSpan}
+                        value={searchData.rowSpan}
                         min={2}
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "search", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...search, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -395,24 +395,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={search.width}
+                        value={searchData.width}
                         min={400}
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "search", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...search, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={search.height}
+                        value={searchData.height}
                         min={350}
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "search", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...search, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -427,10 +427,10 @@ function Settings() {
                         id="lyricsComponent"
                         name="lyricsComponent"
                         value="Lyrics"
-                        defaultChecked={lyrics.showing}
+                        defaultChecked={lyricsData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("lyrics"));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyrics, showing: !lyrics.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, showing: !lyricsData.showing}}));
                         }}
                     />
                     <label htmlFor="lyricsComponent" className="pl-2">Show/Hide</label>
@@ -443,24 +443,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={lyrics.colSpan}
+                        value={lyricsData.colSpan}
                         min={2}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "lyrics", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyrics, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={lyrics.rowSpan}
+                        value={lyricsData.rowSpan}
                         min={2}
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "lyrics", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyrics, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -472,24 +472,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={lyrics.width}
+                        value={lyricsData.width}
                         min={300}
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "lyrics", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyrics, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={lyrics.height}
+                        value={lyricsData.height}
                         min={200}
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "lyrics", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyrics, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -504,10 +504,10 @@ function Settings() {
                         id="heardleComponent"
                         name="heardleComponent"
                         value="Heardle"
-                        defaultChecked={heardle.showing}
+                        defaultChecked={heardleData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("heardle"));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardle, showing: !heardle.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, showing: !heardleData.showing}}));
                         }}
                     />
                     <label htmlFor="heardleComponent" className="pl-2">Show/Hide</label>
@@ -520,24 +520,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={heardle.colSpan}
+                        value={heardleData.colSpan}
                         min={3}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "heardle", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardle, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={heardle.rowSpan}
+                        value={heardleData.rowSpan}
                         min={2}
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "heardle", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardle, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -549,24 +549,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={heardle.width}
+                        value={heardleData.width}
                         min={475}
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "heardle", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardle, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={heardle.height}
+                        value={heardleData.height}
                         min={285}
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "heardle", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardle, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -581,10 +581,10 @@ function Settings() {
                         id="profileComponent"
                         name="profileComponent"
                         value="Profile"
-                        defaultChecked={profile.showing}
+                        defaultChecked={profileData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("profile"));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profile, showing: !profile.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, showing: !profileData.showing}}));
                         }}
                     />
                     <label htmlFor="profileComponent" className="pl-2">Show/Hide</label>
@@ -597,24 +597,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={profile.colSpan}
+                        value={profileData.colSpan}
                         min={2}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "profile", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profile, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={profile.rowSpan}
+                        value={profileData.rowSpan}
                         min={2}
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "profile", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profile, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -626,24 +626,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={profile.width}
+                        value={profileData.width}
                         min={300}
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "profile", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profile, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={profile.height}
+                        value={profileData.height}
                         min={200}
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "profile", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profile, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -658,24 +658,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={settings.colSpan}
+                        value={settingsData.colSpan}
                         min={100}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "settings", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settings, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settingsData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
-                        value={settings.rowSpan}
+                        value={settingsData.rowSpan}
                         min={100}
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "settings", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settings, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settingsData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -687,24 +687,24 @@ function Settings() {
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={settings.width}
+                        value={settingsData.width}
                         min={175}
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "settings", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settings, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settingsData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
                     <input
                         type="number"
                         className="w-14 rounded-lg text-center"
-                        value={settings.height}
+                        value={settingsData.height}
                         min={265}
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "settings", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settings, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settingsData, height: +e.target.value}}));
                         }}
                     />
                 </div>

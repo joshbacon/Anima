@@ -1,17 +1,22 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../state/store";
+import { setQueue } from '../state/queueSlice';
+
+import { getQueue } from '../apicontroller';
 
 import remove from '../assets/playlist_remove.svg';
+import { TrackData } from '../state/interfaces';
 
-function queueItem(key:number) {
-    return <li key={key} className='flex justify-between items-center gap-2 w-full p-2 rounded-lg bg-eigen-light'>
+function queueItem(track:TrackData) {
+    return <li key={track.id} className='flex justify-start items-center gap-2 w-full p-2 rounded-lg bg-eigen-light'>
+        <img className='w-16 rounded' src={track.images[0].url} alt="" />
         <div>
-            <h2 className='text-lg'>Hallelujah</h2>
-            <h3>Jeff Buckley</h3>
+            <h2 className='text-lg'>{track.name}</h2>
+            <h3>{track.artist.name}</h3>
         </div>
-        <button className='rounded-full'>
+        <button className='rounded-full ml-auto'>
             <img src={remove} alt="remove from queue" className='w-7' />
         </button>
     </li>
@@ -20,41 +25,39 @@ function queueItem(key:number) {
 // make this a child of the draggable class
 function Queue() {
 
-    const { mode, color, queue } = useSelector((state: RootState) => state.settings);
+    const dispatch = useDispatch();
 
-    let tempList = [
-        queueItem(1),
-        queueItem(2), 
-        queueItem(3),
-        queueItem(4), 
-        queueItem(5),
-        queueItem(6), 
-        queueItem(7),
-        queueItem(8), 
-        queueItem(9),
-        queueItem(10)
-    ];
+    useEffect(() => {
+        getQueue().then(res => {
+            if (res) dispatch(setQueue(res));
+        });
+    }, []);
+
+    const { queue } = useSelector((state: RootState) => state.queue);
+    const { mode, color, queueData } = useSelector((state: RootState) => state.settings);
 
     return <div
         key="Queue"
         style={ mode ? {
             width: `100%`,
             height: `100%`,
-            gridColumn: `span ${queue.colSpan}`,
-            gridRow: `span ${queue.rowSpan}`
+            gridColumn: `span ${queueData.colSpan}`,
+            gridRow: `span ${queueData.rowSpan}`
         }: {
             position: 'absolute',
             top: 0,
             left: 0,
-            width: `${queue.width}px`,
-            height: `${queue.height}px`,
-            transform: `translate(${queue.posX}px, ${queue.posY}px)`,
+            width: `${queueData.width}px`,
+            height: `${queueData.height}px`,
+            transform: `translate(${queueData.posX}px, ${queueData.posY}px)`,
         }}
         className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
     >
         <h2 className='pb-3 text-xl'>Up Next</h2>
         <ul className='flex flex-col gap-1 h-full overflow-y-scroll'>
-            {tempList.map(e => {return e;})}
+            {queue.map(track => {
+                return queueItem(track);
+            })}
         </ul>
     </div>
 }
