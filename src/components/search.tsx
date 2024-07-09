@@ -11,7 +11,7 @@ import favourite_selected from '../assets/favourite_selected.svg';
 
 
 function searchItem(key:number, callback:any) {
-    return <li key={key} className='flex gap-2 w-full p-2 rounded-lg bg-eigen-light' onClick={() => callback(true)}>
+    return <li key={key} className='flex gap-2 w-full p-2 cursor-pointer rounded-lg bg-eigen-light' onClick={() => callback(true)}>
         <img src={album} alt="album cover" />
         <div className='w-full'>
             <div className='flex justify-between'>
@@ -87,7 +87,7 @@ function Search() {
                     </button>
                 </div>
             </div>
-            <ul className='flex flex-col gap-1 w-full h-full overflow-y-scroll'>
+            <ul className='flex flex-col gap-1 pb-12 w-full h-full overflow-y-scroll'>
                 {tempList.map((e) => {return e})}
             </ul>
         </div>

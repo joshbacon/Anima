@@ -10,7 +10,7 @@ import remove from '../assets/playlist_remove.svg';
 import { TrackData } from '../state/interfaces';
 
 function queueItem(track:TrackData) {
-    return <li key={track.id} className='flex justify-start items-center gap-2 w-full p-2 rounded-lg bg-eigen-light'>
+    return <li key={track.id} className='flex justify-start items-center gap-2 w-full p-2 cursor-pointer rounded-lg bg-eigen-light'>
         <img className='w-16 rounded' src={track.images[0].url} alt="" />
         <div>
             <h2 className='text-lg'>{track.name}</h2>
@@ -54,7 +54,11 @@ function Queue() {
         className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
     >
         <h2 className='pb-3 text-xl'>Up Next</h2>
-        <ul className='flex flex-col gap-1 h-full overflow-y-scroll'>
+        { queue.length === 0 ?
+            <h2 className='mt-3 text-center text-xl'>queue is currently empty</h2>
+            : null
+        }
+        <ul className='flex flex-col gap-1 pb-10 h-full overflow-y-scroll'>
             {queue.map(track => {
                 return queueItem(track);
             })}

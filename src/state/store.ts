@@ -1,5 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
 
+import playerReducer from './playerSlice';
 import profileReducer from './profileSlice';
 import settingsReducer from './settingsSlice';
 import playlistReducer from './playlistSlice';
@@ -10,6 +11,7 @@ import queueReducer from './queueSlice';
 
 export const store = configureStore({
     reducer: {
+        player: playerReducer,
         profile: profileReducer,
         settings: settingsReducer,
         playlists: playlistReducer,

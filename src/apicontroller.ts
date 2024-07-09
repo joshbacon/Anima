@@ -3,7 +3,7 @@
 
 import axios from "axios";
 import { Buffer } from "buffer";
-import { TrackData, ArtistData, PlaylistData } from './state/interfaces';
+import { TrackData, emptyTrack, ArtistData, PlaylistData } from './state/interfaces';
 
 
 export let VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
@@ -80,15 +80,30 @@ export function signOut() {
     document.location = "http://localhost:5173";
 }
 
-export async function getCurrentlyPlaying() {
-    axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
+export async function getCurrentlyPlaying():Promise<TrackData> {
+    return axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
-        .then(res => {
-            return res.data;
+        .then(res => {console.log(res);
+            let { id, name, artists, album, explicit } = res.data.item;
+            const data:TrackData =  {
+                id: id,
+                name: name,
+                duration: 0,
+                artist: {
+                    id: artists[0].id,
+                    name: artists[0].name,
+                    images: [],
+                },
+                images: album.images,
+                albumID: album.id,
+                explicit: explicit,
+            }
+            console.log(data)
+            return data;
         })
         .catch(err => {
-            console.log(err);
+            return emptyTrack;
         });
 }
 

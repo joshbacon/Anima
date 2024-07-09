@@ -16,6 +16,20 @@ export interface TrackData {
     explicit: boolean,
 }
 
+export const emptyTrack:TrackData = {
+    id: "0",
+    name: "title",
+    duration: 0,
+    artist: {
+        id: "0",
+        name: "artist",
+        images: [],
+    },
+    images: [],
+    albumID: "0",
+    explicit: false,
+};
+
 export interface ArtistData {
     id: string,
     name: string,

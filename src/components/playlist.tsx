@@ -54,7 +54,7 @@ function Playlist() {
         className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
     >
         <h2 className='pb-3 text-xl'>Playlists</h2>
-        <ul className='flex flex-col gap-1 w-full h-full overflow-y-scroll'>
+        <ul className='flex flex-col gap-1 pb-10 w-full h-full overflow-y-scroll'>
             {playlists.map(playlist => {
                 return playlistItem(playlist);
             })}

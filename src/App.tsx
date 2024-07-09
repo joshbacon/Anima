@@ -23,6 +23,14 @@ interface Component {
   component: JSX.Element,
 }
 
+//  TODO:
+// - add a router
+// - have a sign in page that refreshes the token if already logged in and
+//    does all the api calls and dispatches initial state into the store
+// -- if a call fails (some 400 message) after token refresh have them resign in
+// -- only navigate after setting store, should fix issues where store updates but components don't
+// - also have a route for a feedback form
+
 function App() {
 
   const { mode, playerData, queueData, playlistData, settingsData, searchData, lyricsData, heardleData, profileData } = useSelector((state: RootState) => state.settings);

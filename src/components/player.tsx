@@ -1,7 +1,8 @@
 import { useEffect, useState, useRef } from 'react';
 
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import { setCurrentlyPlaying } from '../state/playerSlice';
 
 import play from '../assets/play.svg';
 import pause from '../assets/pause.svg';
@@ -14,7 +15,20 @@ import { getCurrentlyPlaying } from '../apicontroller';
 // make this a child of the draggable class
 function Player() {
 
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        getCurrentlyPlaying().then(res => {
+            if (res) dispatch(setCurrentlyPlaying(res));
+        });
+    }, []);
+
+    const { track } = useSelector((state: RootState) => state.player);
     const { mode, color, playerData } = useSelector((state: RootState) => state.settings);
+
+    console.log(track);
+    console.log(track.artist);
+    console.log(track.artist.name);
 
     const [playing, setPlaying] = useState<boolean>(false);
     const [currVolume, setCurrVolume] = useState<number>(50);
@@ -50,8 +64,8 @@ function Player() {
     >
         <div className='flex'>
             <div className='flex flex-col'>
-                <h2 className='text-xl'>Hallelujah</h2>
-                <h2>Jeff Buckley</h2>
+                <h2 className='text-xl'>{track.name}</h2>
+                <h2>{track.artist.name}</h2>
             </div>
         </div>
         <div className='flex flex-col justify-center items-center gap-5 w-2/5'>
