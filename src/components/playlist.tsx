@@ -12,8 +12,8 @@ import { PlaylistData } from '../state/interfaces';
 
 
 function playlistItem(data:PlaylistData) {
-    return <li key={data.id} className='flex justify-start items-center gap-2 w-full p-2 cursor-pointer rounded-lg bg-eigen-light'>
-        <img className='w-16 rounded' src={data.images[0].url} alt="" />
+    return <li key={data.id} className='flex justify-start items-center gap-2 w-full p-2 cursor-pointer rounded-lg hover:bg-eigen-light hover:bg-opacity-50'>
+        <img className='w-16 aspect-square rounded' src={data.images[0].url} alt="" />
         <div>
             <h2 className='text-lg'>{data.name}</h2>
             <h3>{data.tracks} songs</h3>

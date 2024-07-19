@@ -3,8 +3,10 @@
 
 import axios from "axios";
 import { Buffer } from "buffer";
-import { TrackData, emptyTrack, ArtistData, PlaylistData } from './state/interfaces';
+import { TrackData, emptyTrack, ArtistData, PlaylistData, AlbumData } from './state/interfaces';
 
+
+// Authorization Functions
 
 export let VITE_CLIENT_ID = import.meta.env.VITE_CLIENT_ID;
 export let VITE_REDIRECT_URI = import.meta.env.VITE_REDIRECT_URI;
@@ -20,8 +22,6 @@ export async function setToken() {
 
     let authToken = Buffer.from(`${VITE_CLIENT_ID}:${VITE_SECRET}`, 'utf-8').toString('base64');
 
-    // This returns a 200 response then a 400 (Bad Request Error)
-    // believe it's just because it's in development mode and the state loads twice
     const response = await axios.post('https://accounts.spotify.com/api/token', {
         'client_id': VITE_CLIENT_ID,
         'grant_type': 'authorization_code',
@@ -34,7 +34,6 @@ export async function setToken() {
             "Content-Type": 'application/x-www-form-urlencoded',
         },
     })
-    console.log(response);
     localStorage.setItem('token', response.data.access_token);
 }
 
@@ -48,7 +47,7 @@ export async function redirectToAuth() {
     params.append("client_id", VITE_CLIENT_ID);
     params.append("response_type", "code");
     params.append("redirect_uri", "http://localhost:5173");
-    params.append("scope", "user-read-private user-read-email user-read-currently-playing user-read-playback-state playlist-read-private user-top-read");
+    params.append("scope", "user-read-private user-read-email user-read-currently-playing user-modify-playback-state user-read-playback-state playlist-read-private user-top-read");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
 
@@ -80,17 +79,22 @@ export function signOut() {
     document.location = "http://localhost:5173";
 }
 
+
+// Player Functions
+
 export async function getCurrentlyPlaying():Promise<TrackData> {
     return axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
         headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
-        .then(res => {console.log(res);
+        .then(res => {
             let { id, name, artists, album, explicit } = res.data.item;
             const data:TrackData =  {
+                _type: 'track',
                 id: id,
                 name: name,
                 duration: 0,
                 artist: {
+                    _type: 'artist',
                     id: artists[0].id,
                     name: artists[0].name,
                     images: [],
@@ -99,13 +103,27 @@ export async function getCurrentlyPlaying():Promise<TrackData> {
                 albumID: album.id,
                 explicit: explicit,
             }
-            console.log(data)
             return data;
         })
         .catch(err => {
             return emptyTrack;
         });
 }
+
+export async function previousSong() {
+    axios.get("https://api.spotify.com/v1/me/player/previous", {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+}
+
+export async function nextSong() {
+    axios.get("https://api.spotify.com/v1/me/player/next", {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    });
+}
+
+
+// Playlist Functions
 
 export async function getPlaylists():Promise<PlaylistData[]> {
     return axios.get("https://api.spotify.com/v1/me/playlists", {
@@ -127,6 +145,9 @@ export async function getPlaylists():Promise<PlaylistData[]> {
             console.log(err);
         });
 }
+
+
+// Queue Functions
 
 export async function getQueue():Promise<TrackData[]> {
     return axios.get("https://api.spotify.com/v1/me/player/queue", {
@@ -154,6 +175,71 @@ export async function getQueue():Promise<TrackData[]> {
             console.log(err);
         });
 }
+
+
+// Search Functions
+
+export async function search(filter:string, query:string):Promise<(TrackData|ArtistData|AlbumData)[]> {
+    return axios.get(`https://api.spotify.com/v1/search?q=${query}&type=${filter}`, {
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+    })
+        .then(res => {
+            if (filter === "track") {
+                return res.data.tracks.items.map((track:any) => {
+                    let { name, duration_ms, artists, album, id, explicit } = track;
+                    return {
+                        _type: "track",
+                        id: id,
+                        name: name,
+                        duration: duration_ms,
+                        artist: {
+                            id: artists[0].id,
+                            name: artists[0].name,
+                            images: artists[0].images,
+                        },
+                        images: album.images,
+                        albumId: album.id,
+                        explicit: explicit,
+                    }
+                })
+            } else if  (filter === "artist") {
+                return res.data.artists.items.map((artist: any) => {
+                    let { name, images, id } = artist;
+                    return {
+                        _type: "artist",
+                        id: id,
+                        name: name,
+                        images: images,
+                    }
+                });
+            } else { // filter === "album"
+                return res.data.albums.items.map((album: any) => {
+                    let { name, artists, type, album_type, images, id, uri } = album;
+                    return {
+                        _type: "album",
+                        id: id,
+                        name: name,
+                        artist: {
+                            id: artists[0].id,
+                            name: artists[0].name,
+                            images: artists[0].images,
+                        },
+                        tracks: [],
+                        type: type,
+                        albumType: album_type,
+                        images: images,
+                        albumLink: uri.split(':')[2],
+                    }
+                });
+            }
+        })
+        .catch(err => {
+            console.log(err);
+        });
+}
+
+
+// User Info Functions
 
 export async function getProfile():Promise<string> {
     return axios.get("https://api.spotify.com/v1/me", {

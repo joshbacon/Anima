@@ -1,7 +1,9 @@
-import { useState, useRef } from 'react';
+import { useState, useEffect } from 'react';
 
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import { search } from '../apicontroller'
+import { TrackData, ArtistData, AlbumData } from '../state/interfaces';
 
 import info from '../assets/info.svg';
 import album from '../assets/album.svg';
@@ -10,22 +12,47 @@ import favourite from '../assets/favourite.svg';
 import favourite_selected from '../assets/favourite_selected.svg';
 
 
-function searchItem(key:number, callback:any) {
-    return <li key={key} className='flex gap-2 w-full p-2 cursor-pointer rounded-lg bg-eigen-light' onClick={() => callback(true)}>
-        <img src={album} alt="album cover" />
-        <div className='w-full'>
-            <div className='flex justify-between'>
-                <h2>Hallelujah</h2>
-                <p>6:54</p>
+function searchItem(data:TrackData|ArtistData|AlbumData, callback:Function) {
+    if (data._type === "track"){
+        const { id, name, images, duration, artist } = data as TrackData;
+        const seconds = (duration / 1000 % 60).toFixed(0);
+        const timeLength = `${Math.floor(duration / 1000 / 60)}:${seconds.length === 1 ? seconds+'0' : seconds}`;
+        return <li key={id} className='flex gap-2 w-full p-2 cursor-pointer rounded-lg hover:bg-eigen-light hover:bg-opacity-50' onClick={() => callback(true)}>
+            <img className='w-16 aspect-square' src={images[0].url} alt="album cover" />
+            <div className='w-full'>
+                <div className='flex justify-between'>
+                    <h2>{name}</h2>
+                    <p>{timeLength}</p>
+                </div>
+                <div className='flex justify-between'>
+                    <h3>{artist.name}</h3>
+                    <button className='rounded-full'>
+                        <img src={info} alt="info" className='w-7' />
+                    </button>
+                </div>
             </div>
-            <div className='flex justify-between'>
-                <h3>Jeff Buckley</h3>
-                <button className='rounded-full'>
-                    <img src={info} alt="info" className='w-7' />
-                </button>
+        </li>
+    } else if (data._type === "artist") {
+        const { id, name, images} = data as ArtistData;
+        return <li key={id} className='flex gap-2 w-full p-2 cursor-pointer rounded-lg hover:bg-eigen-light hover:bg-opacity-50' onClick={() => callback(true)}>
+            <img className='w-16 aspect-square' src={images[0].url} alt="album cover" />
+            <div className='w-full'>
+                <div className='flex justify-between'>
+                    <h2>{name}</h2>
+                </div>
             </div>
-        </div>
-    </li>
+        </li>
+    } else { // data._type === "album"
+        const { id, name, images} = data as AlbumData;
+        return <li key={id} className='flex gap-2 w-full p-2 cursor-pointer rounded-lg hover:bg-eigen-light hover:bg-opacity-50' onClick={() => callback(true)}>
+            <img className='w-16 aspect-square' src={images[0].url} alt="album cover" />
+            <div className='w-full'>
+                <div className='flex justify-between'>
+                    <h2>{name}</h2>
+                </div>
+            </div>
+        </li>
+    }
 }
 
 // make this a child of the draggable class
@@ -33,22 +60,27 @@ function Search() {
     
     const { mode, color, searchData } = useSelector((state: RootState) => state.settings);
 
-    function apiSearchQuery() {
-        // debounce this
+    const [searchQuery, setSearchQuery] = useState<string>("");
+    const [filter, setFilter] = useState<string>("track");
+
+    const [searchResults, setSearchResults] = useState<(TrackData|ArtistData|AlbumData)[]>([]);
+
+    useEffect(() => {
+        const callSearch = setTimeout(() => {
+            if (searchQuery) apiSearchQuery();
+        }, 500);
+        return () => clearTimeout(callSearch);
+    }, [searchQuery, filter]);
+
+    async function apiSearchQuery() {
+        search(filter, searchQuery).then(response => {
+            setSearchResults(response);
+        });
     }
 
     // make an interface to hold all the song data in one state object
     const [selectedSong, setSelectedSong] = useState<boolean>(false);
     const [selectedSongFavourited, setSelectedSongFavourited] = useState<boolean>(false);
-
-    let tempList = [
-        searchItem(1, setSelectedSong),
-        searchItem(2, setSelectedSong), 
-        searchItem(3, setSelectedSong),
-        searchItem(4, setSelectedSong), 
-        searchItem(5, setSelectedSong),
-        searchItem(6, setSelectedSong)
-    ];
 
     return <div
         key="Search"
@@ -70,8 +102,30 @@ function Search() {
         <input
             type="text"
             placeholder='search...'
-            className='w-full px-2 py-1 text-xl rounded-md mb-3'
+            spellCheck="false"
+            className='w-full px-2 py-1 text-xl rounded-md'
+            onChange={(e) => {if (e.target.value) setSearchQuery(e.target.value)}}
         />
+        <div className='flex gap-4 my-3'>
+            <button
+                onClick={() => {setFilter('track')}}
+                className={`px-3 py-1 rounded ${filter === "track" ? 'bg-eigen' : 'bg-eigen-light'}`}
+            >
+                <h2>Track</h2>
+            </button>
+            <button
+                onClick={() => {setFilter('artist')}}
+                className={`px-3 py-1 rounded ${filter === "artist" ? 'bg-eigen' : 'bg-eigen-light'}`}
+            >
+                <h2>Artist</h2>
+            </button>
+            <button
+                onClick={() => {setFilter('album')}}
+                className={`px-3 py-1 rounded ${filter === "album" ? 'bg-eigen' : 'bg-eigen-light'}`}
+            >
+                <h2>Album</h2>
+            </button>
+        </div>
         <div className='flex gap-2 w-full h-full'>
             <div className={`flex flex-col gap-4 h-full ${selectedSong ? 'block' : 'hidden'}`}>
                 <img src={album} alt="" />
@@ -88,7 +142,7 @@ function Search() {
                 </div>
             </div>
             <ul className='flex flex-col gap-1 pb-12 w-full h-full overflow-y-scroll'>
-                {tempList.map((e) => {return e})}
+                {searchResults.map((item) => searchItem(item, setSelectedSong))}
             </ul>
         </div>
     </div>

@@ -7,6 +7,7 @@ export interface ImageData {
 }
 
 export interface TrackData {
+    _type: 'track',
     id: string,
     name: string,
     duration: number,
@@ -17,10 +18,12 @@ export interface TrackData {
 }
 
 export const emptyTrack:TrackData = {
+    _type: 'track',
     id: "0",
     name: "title",
     duration: 0,
     artist: {
+        _type: 'artist',
         id: "0",
         name: "artist",
         images: [],
@@ -31,13 +34,15 @@ export const emptyTrack:TrackData = {
 };
 
 export interface ArtistData {
+    _type: 'artist',
     id: string,
     name: string,
     images: ImageData[],
 }
 
 export interface AlbumData {
-    album: string,
+    _type: 'album',
+    name: string,
     artist: string,
     tracks: TrackData[],
     type: string,
@@ -48,6 +53,7 @@ export interface AlbumData {
 }
 
 export interface PlaylistData {
+    _type: 'playlist',
     id: string;
     name: string;
     images: ImageData[];

@@ -10,14 +10,14 @@ import remove from '../assets/playlist_remove.svg';
 import { TrackData } from '../state/interfaces';
 
 function queueItem(track:TrackData) {
-    return <li key={track.id} className='flex justify-start items-center gap-2 w-full p-2 cursor-pointer rounded-lg bg-eigen-light'>
-        <img className='w-16 rounded' src={track.images[0].url} alt="" />
+    return <li key={track.id} className='flex justify-start items-center gap-2 w-full p-2 cursor-pointer rounded-lg hover:bg-eigen-light hover:bg-opacity-50'>
+        <img className='w-16 aspect-square rounded' src={track.images[0].url} alt="" />
         <div>
             <h2 className='text-lg'>{track.name}</h2>
             <h3>{track.artist.name}</h3>
         </div>
         <button className='rounded-full ml-auto'>
-            <img src={remove} alt="remove from queue" className='w-7' />
+            <img src={remove} alt="remove from queue" className='min-w-7' />
         </button>
     </li>
 }

@@ -37,15 +37,15 @@ function Profile() {
     }
 
     function artistItem(data:ArtistData) {
-        return <div key={data.id} className='flex flex-col justify-center items-center w-full h-full py-2 cursor-pointer hover:bg-eigen-light hover:bg-opacity-50 rounded-xl'>
-            <img className='p-2 rounded' src={data.images[0].url} alt="album cover" />
+        return <div key={data.id} className='flex flex-col justify-start items-center w-full h-full py-2 cursor-pointer hover:bg-eigen-light hover:bg-opacity-50 rounded-xl'>
+            <img className='p-2 aspect-square rounded' src={data.images[0].url} alt="album cover" />
             <h2>{data.name}</h2>
         </div>
     }
 
     function trackItem(data:TrackData) {
-        return <li key={data.id} className='flex justify-start items-center gap-2 w-full p-2 cursor-pointer rounded-lg bg-eigen-light'>
-            <img className='w-16 rounded' src={data.images[0].url} alt="" />
+        return <li key={data.id} className='flex justify-start items-center gap-2 w-full p-2 cursor-pointer rounded-lg  hover:bg-eigen-light hover:bg-opacity-50'>
+            <img className='w-16 aspect-square rounded' src={data.images[0].url} alt="" />
             <div>
                 <h2 className='text-lg'>{data.name}</h2>
                 <h3>{data.artist.name}</h3>

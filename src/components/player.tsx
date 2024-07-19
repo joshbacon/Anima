@@ -10,7 +10,7 @@ import previous from '../assets/previous.svg';
 import next from '../assets/next.svg';
 import volume from '../assets/volume.svg';
 import mute from '../assets/mute.svg';
-import { getCurrentlyPlaying } from '../apicontroller';
+import { getCurrentlyPlaying, previousSong, nextSong } from '../apicontroller';
 
 // make this a child of the draggable class
 function Player() {
@@ -26,24 +26,12 @@ function Player() {
     const { track } = useSelector((state: RootState) => state.player);
     const { mode, color, playerData } = useSelector((state: RootState) => state.settings);
 
-    console.log(track);
-    console.log(track.artist);
-    console.log(track.artist.name);
-
     const [playing, setPlaying] = useState<boolean>(false);
     const [currVolume, setCurrVolume] = useState<number>(50);
     const [isMuted, toggleMuted] = useState<boolean>(false);
 
     const [songLength, setSongLength] = useState<number>(300);
     const [timePlaying, setTimePlaying] = useState<number>(120);
-
-    function nextSong() {
-        
-    }
-    
-    function previousSong() {
-        
-    }
 
     return <div
         key="Player"
