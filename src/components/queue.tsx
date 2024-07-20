@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../state/store";
@@ -34,11 +34,11 @@ function Queue() {
     }, []);
 
     const { queue } = useSelector((state: RootState) => state.queue);
-    const { mode, color, queueData } = useSelector((state: RootState) => state.settings);
+    const { snapToGrid, color, queueData } = useSelector((state: RootState) => state.settings);
 
     return <div
         key="Queue"
-        style={ mode ? {
+        style={ snapToGrid ? {
             width: `100%`,
             height: `100%`,
             gridColumn: `span ${queueData.colSpan}`,
@@ -51,7 +51,7 @@ function Queue() {
             height: `${queueData.height}px`,
             transform: `translate(${queueData.posX}px, ${queueData.posY}px)`,
         }}
-        className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
+        className={queueData.showing ? `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700` : 'hidden'}
     >
         <h2 className='pb-3 text-xl'>Up Next</h2>
         { queue.length === 0 ?

@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect } from 'react';
 
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../state/store";
@@ -34,11 +34,11 @@ function Playlist() {
     }, []);
     
     const { playlists } = useSelector((state: RootState) => state.playlists);
-    const { mode, color, playlistData } = useSelector((state: RootState) => state.settings);
+    const { snapToGrid, color, playlistData } = useSelector((state: RootState) => state.settings);
 
     return <div
         key="Playlist"
-        style={ mode ? {
+        style={ snapToGrid ? {
             width: `100%`,
             height: `100%`,
             gridColumn: `span ${playlistData.colSpan}`,
@@ -51,7 +51,7 @@ function Playlist() {
             height: `${playlistData.height}px`,
             transform: `translate(${playlistData.posX}px, ${playlistData.posY}px)`,
         }}
-        className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
+        className={playlistData.showing ? `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700` : 'hidden'}
     >
         <h2 className='pb-3 text-xl'>Playlists</h2>
         <ul className='flex flex-col gap-1 pb-10 w-full h-full overflow-y-scroll'>

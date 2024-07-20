@@ -58,7 +58,7 @@ function searchItem(data:TrackData|ArtistData|AlbumData, callback:Function) {
 // make this a child of the draggable class
 function Search() {
     
-    const { mode, color, searchData } = useSelector((state: RootState) => state.settings);
+    const { snapToGrid, color, searchData } = useSelector((state: RootState) => state.settings);
 
     const [searchQuery, setSearchQuery] = useState<string>("");
     const [filter, setFilter] = useState<string>("track");
@@ -84,7 +84,7 @@ function Search() {
 
     return <div
         key="Search"
-        style={ mode ? {
+        style={ snapToGrid ? {
             width: `100%`,
             height: `100%`,
             gridColumn: `span ${searchData.colSpan}`,
@@ -97,7 +97,7 @@ function Search() {
             height: `${searchData.height}px`,
             transform: `translate(${searchData.posX}px, ${searchData.posY}px)`,
         }}
-        className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700`}
+        className={searchData.showing ? `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-hidden transition-all duration-700` : 'hidden'}
     >
         <input
             type="text"

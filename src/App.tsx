@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import { setToken } from './apicontroller';
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { RootState } from "./state/store";
 
 import Player from './components/player';
@@ -19,7 +19,6 @@ import SignIn from './components/signin';
 interface Component {
   id: string,
   index: number,
-  showing: boolean,
   component: JSX.Element,
 }
 
@@ -33,7 +32,7 @@ interface Component {
 
 function App() {
 
-  const { mode, playerData, queueData, playlistData, settingsData, searchData, lyricsData, heardleData, profileData } = useSelector((state: RootState) => state.settings);
+  const { snapToGrid, componentList } = useSelector((state: RootState) => state.settings);
 
   const [signedIn, setSignedIn] = useState<boolean>(false);
 
@@ -54,30 +53,33 @@ function App() {
     }
   }, []);
 
-
-  // need to rethink this whole mapping concept now that redux is setup
-  const [componentList, setComponentList] = useState<Component[]>([
-    { id: "Player",   index: 0, showing: playerData.showing,   component: <Player />   },
-    { id: "Queue",    index: 1, showing: queueData.showing,    component: <Queue />    },
-    { id: "Playlist", index: 2, showing: playlistData.showing, component: <Playlist /> },
-    { id: "Settings", index: 3, showing: settingsData.showing, component: <Settings /> },
-    { id: "Search",   index: 4, showing: searchData.showing,   component: <Search />   },
-    { id: "Lyrics",   index: 5, showing: lyricsData.showing,   component: <Lyrics />   },
-    { id: "Heardle",  index: 6, showing: heardleData.showing,  component: <Heardle />  },
-    { id: "Profile",  index: 7, showing: profileData.showing,  component: <Profile />  }
-  ]);
-
   return <div
-    key="main"
     className={
       `w-screen h-screen overflow-auto p-3 font-main ` +
-      ( mode ? 'grid place-items-center gap-3 grid-cols-[repeat(auto-fit,minmax(150px,1fr))] auto-rows-[144px]' : '')
+      ( snapToGrid ? 'grid place-items-center gap-3 grid-cols-[repeat(auto-fit,minmax(150px,1fr))] auto-rows-[144px]' : '')
     }
   >
     { !signedIn ?
       <SignIn /> :
-      componentList.sort((a:Component, b:Component) => a.index - b.index).map(c => {
-        return c.showing ? c.component : null;
+      componentList.map(id => {
+        switch(id) {
+          case 'player':
+            return <Player />;
+          case 'queue':
+            return <Queue />;
+          case 'playlist':
+            return <Playlist />;
+          case 'settings':
+            return <Settings />;
+          case 'search':
+            return <Search />;
+          case 'lyrics':
+            return <Lyrics />;
+          case 'heardle':
+            return <Heardle />;
+          case 'profile':
+            return <Profile />;
+        }
       })
     }
   </div>

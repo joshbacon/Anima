@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState } from 'react';
 
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../state/store";
@@ -24,7 +24,7 @@ function Player() {
     }, []);
 
     const { track } = useSelector((state: RootState) => state.player);
-    const { mode, color, playerData } = useSelector((state: RootState) => state.settings);
+    const { snapToGrid, color, playerData } = useSelector((state: RootState) => state.settings);
 
     const [playing, setPlaying] = useState<boolean>(false);
     const [currVolume, setCurrVolume] = useState<number>(50);
@@ -35,7 +35,7 @@ function Player() {
 
     return <div
         key="Player"
-        style={ mode ? {
+        style={ snapToGrid ? {
             width: `100%`,
             height: `100%`,
             gridColumn: `span ${playerData.colSpan}`,
@@ -48,7 +48,7 @@ function Player() {
             height: `${playerData.height}px`,
             transform: `translate(${playerData.posX}px, ${playerData.posY}px)`,
         }}
-        className={`flex justify-evenly items-center gap-5 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl p-3 transition-all duration-700`}
+        className={playerData.showing ? `flex justify-evenly items-center gap-5 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl p-3 transition-all duration-700` : 'hidden'}
     >
         <div className='flex'>
             <div className='flex flex-col'>

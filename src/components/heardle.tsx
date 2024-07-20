@@ -1,5 +1,3 @@
-import { useState, useRef } from 'react';
-
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
 
@@ -10,11 +8,11 @@ import wrong from '../assets/wrong.svg';
 // make this a child of the draggable class
 function Heardle() {
     
-    const { mode, color, heardleData } = useSelector((state: RootState) => state.settings);
+    const { snapToGrid, color, heardleData } = useSelector((state: RootState) => state.settings);
 
     return <div
         key="Heardle"
-        style={ mode ? {
+        style={ snapToGrid ? {
             width: `100%`,
             height: `100%`,
             gridColumn: `span ${heardleData.colSpan}`,
@@ -27,7 +25,7 @@ function Heardle() {
             height: `${heardleData.height}px`,
             transform: `translate(${heardleData.posX}px, ${heardleData.posY}px)`
         }}
-        className={`p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-auto transition-all duration-700`}
+        className={heardleData.showing ? `p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-auto transition-all duration-700` : 'hidden'}
     >
         <div className='flex justify-between items-center mb-4'>
             <h2 className='text-xl'>Heardle</h2>

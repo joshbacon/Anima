@@ -1,7 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 interface ComponentState {
-    index: number;
     showing: boolean;
     colSpan: number;
     rowSpan: number;
@@ -12,7 +11,6 @@ interface ComponentState {
 }
 
 const initialPlayer:ComponentState = {
-    index: 0,
     showing: true,
     colSpan: 4,
     rowSpan: 1,
@@ -23,7 +21,6 @@ const initialPlayer:ComponentState = {
 }
 
 const initialQueue:ComponentState = {
-    index: 1,
     showing: true,
     colSpan: 2,
     rowSpan: 4,
@@ -34,7 +31,6 @@ const initialQueue:ComponentState = {
 }
 
 const initialPlaylist:ComponentState = {
-    index: 2,
     showing: true,
     colSpan: 2,
     rowSpan: 4,
@@ -45,7 +41,6 @@ const initialPlaylist:ComponentState = {
 }
 
 const initialSettings:ComponentState = {
-    index: 3,
     showing: true,
     colSpan: 2,
     rowSpan: 3,
@@ -56,7 +51,6 @@ const initialSettings:ComponentState = {
 }
 
 const initialSearch:ComponentState = {
-    index: 4,
     showing: true,
     colSpan: 3,
     rowSpan: 3,
@@ -67,8 +61,7 @@ const initialSearch:ComponentState = {
 }
 
 const initialLyrics:ComponentState = {
-    index: 5,
-    showing: true,
+    showing: false,
     colSpan: 2,
     rowSpan: 3,
     width: 550,
@@ -78,8 +71,7 @@ const initialLyrics:ComponentState = {
 }
 
 const initialHeardle:ComponentState = {
-    index: 6,
-    showing: true,
+    showing: false,
     colSpan: 3,
     rowSpan: 2,
     width: 550,
@@ -89,7 +81,6 @@ const initialHeardle:ComponentState = {
 }
 
 const initialProfile:ComponentState = {
-    index: 7,
     showing: true,
     colSpan: 3,
     rowSpan: 2,
@@ -100,8 +91,9 @@ const initialProfile:ComponentState = {
 }
 
 interface SettingsState {
-    mode: boolean;
+    snapToGrid: boolean;
     color: string;
+    componentList: string[];
     playerData: ComponentState;
     queueData: ComponentState;
     playlistData: ComponentState;
@@ -113,8 +105,18 @@ interface SettingsState {
 }
 
 const initialState:SettingsState = {
-    mode: true,
+    snapToGrid: true,
     color: "purple",
+    componentList: [
+        'player',
+        'queue',
+        'playlist',
+        'settings',
+        'search',
+        'lyrics',
+        'heardle',
+        'profile',
+    ],
     playerData: initialPlayer,
     queueData: initialQueue,
     playlistData: initialPlaylist,
@@ -129,11 +131,17 @@ const settingsSlice = createSlice({
     name: "settings",
     initialState,
     reducers: {
-        toggleMode: (state) => {
-            state.mode = !state.mode
+        toggleSnapToGrid: (state) => {
+            state.snapToGrid = !state.snapToGrid
         },
         changeColor: (state, action: PayloadAction<string>) => {
             state.color = action.payload;
+        },
+        changeOrder: (state, action: PayloadAction<{id:string, to:number}>) => {
+            let temp = [...state.componentList];
+            temp.splice(temp.indexOf(action.payload.id), 1);
+            temp.splice(action.payload.to, 0, action.payload.id);
+            state.componentList = temp;
         },
         toggleShowing: (state, action: PayloadAction<string>) => {
             switch (action.payload) {
@@ -279,13 +287,14 @@ const settingsSlice = createSlice({
 });
 
 export const {
-    toggleMode,
+    toggleSnapToGrid,
     changeColor,
+    changeOrder,
     toggleShowing,
     changeColSpan,
     changeRowSpan,
     changeWidth,
-    changeHeight
+    changeHeight,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;

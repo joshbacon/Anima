@@ -1,62 +1,33 @@
 
-// settings list
-// * have little info tool tips or just on the side explaining the purpose of the setting
-
-// - toggle snap to grid
-// -- animate the components moving to the new position on toggle (but quickly encase they spam it, idk debug)
-
-
-// * grey out whatever section is disabled to be verbose
-
-// snap-to-grid ON
-// - be able to change the component sizes (col/row span) between a couple presets 
-// - need to be able to fit nicely in 6x6 or whatever it ends up being, larger grid size means more available presets
-
-// snap-to-grid OFF
-// idk honestly
+// add more background options, for both cards and page itself
+// - glass cards
+// - patterns for cards
+// - picture upload for page background
 
 
-// have an option to set the cards to glass or other colors
-// have different background colors too (also upload pictures???)
+// TODO:
+// - figure out what to store in redux and bring in on load
+// -- (adding the router should hadndle any race conditions with the state)
 
-import { useRef } from 'react';
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../state/store";
-import { toggleMode, changeColor, toggleShowing, changeColSpan, changeRowSpan, changeWidth, changeHeight } from "../state/settingsSlice";
+import { toggleSnapToGrid, changeColor, changeOrder, toggleShowing, changeColSpan, changeRowSpan, changeWidth, changeHeight } from "../state/settingsSlice";
 
 import { signOut } from "../apicontroller";
-
-// TODO: turn these in to redux actions.... I think
-
-// function updateShowing(id:string, isShowing:boolean) {
-//     let tempList:Component[] = [...componentList];
-//     tempList[tempList.map(c => c.id).indexOf(id)]Data.showing = isShowing;
-//     setComponentList(tempList);
-// }
-
-// //  use this when yo get to rearranging the components
-// function changeIndices(from:number, to:number) {
-//     let tempList:Component[] = [...componentList];
-//     tempList[from].index = to;
-
-//     // Increse all the indecies between to and from (moved up in array)
-//     for (let i = from-1; i >= to; i--) tempList[i].index += 1;
-
-//     // Decrease all the indecies between from and to (moved down in array)
-//     for (let i = from+1; i <= to && i < tempList.length; i++) tempList[i].index -= 1;
-
-//     setComponentList(tempList);
-// }
 
 function Settings() {
 
     const state = useSelector((state: RootState) => state.settings);
-    const { mode, color, playerData, queueData, playlistData, settingsData, searchData, lyricsData, heardleData, profileData } = state;
+    const { snapToGrid, color, componentList, playerData, queueData, playlistData, settingsData, searchData, lyricsData, heardleData, profileData } = state;
     const dispatch = useDispatch();
+
+    function updateIndices(id:string, to:number) {
+        dispatch(changeOrder({id, to}));
+    }
 
     return <div
         key="Settings"
-        style={ mode ? {
+        style={ snapToGrid ? {
             width: `100%`,
             height: `100%`,
             gridColumn: `span ${settingsData.colSpan}`,
@@ -69,7 +40,7 @@ function Settings() {
             height: `${settingsData.height}px`,
             transform: `translate(${settingsData.posX}px, ${settingsData.posY}px)`
         }}
-        className={`flex ${(mode && settingsData.colSpan < settingsData.rowSpan) || (!mode && settingsData.width < settingsData.height) ? 'flex-col': ''} gap-2 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll transition-all duration-700`}
+        className={`flex ${(snapToGrid && settingsData.rowSpan >= settingsData.colSpan) || (!snapToGrid && settingsData.height >= settingsData.width) ? 'flex-col' : ''} gap-2 p-3 bg-${color}-600 bg-opacity-50 hover:bg-opacity-70 rounded-2xl overflow-y-scroll transition-all duration-700`}
     >
         <div className='flex flex-col gap-2'>
             <h2 className="text-xl">
@@ -79,11 +50,11 @@ function Settings() {
                 <button
                     className={`w-full h-full py-1 text-lg font-semibold bg-${color}-600 rounded-md`}
                     onClick={() => {
-                        dispatch(toggleMode());
-                        localStorage.setItem('settings', JSON.stringify({...state, mode: !mode}));
+                        dispatch(toggleSnapToGrid());
+                        localStorage.setItem('settings', JSON.stringify({...state, snapToGrid: !snapToGrid}));
                     }}
                 >
-                    <h2>{mode ? "Snap to Grid" : "Free Form"}</h2>
+                    <h2>{snapToGrid ? "Snap to Grid" : "Free Form"}</h2>
                 </button>
             </div>
 
@@ -110,6 +81,91 @@ function Settings() {
             </div>
         </div>
 
+        <div className="relative p-2 rounded-lg hover:bg-eigen hover:bg-opacity-30">
+            <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapToGrid ? "hidden" : "block"}`} />
+            <h2 className="mb-2">Component Order</h2>
+            <div className='flex justify-between items-center'>
+                <h2>Player</h2>
+                <input
+                    className='pl-2'
+                    type="number"
+                    min={0} max={7}
+                    value={componentList.indexOf('player')}
+                    onChange={(e) => {updateIndices('player', +e.target.value)}}
+                />
+            </div>
+            <div className='flex justify-between items-center'>
+                <h2>Queue</h2>
+                <input
+                    className='pl-2'
+                    type="number"
+                    min={0} max={7}
+                    value={componentList.indexOf('queue')}
+                    onChange={(e) => {updateIndices('queue', +e.target.value)}}
+                />
+            </div>
+            <div className='flex justify-between items-center'>
+                <h2>Playlists</h2>
+                <input
+                    className='pl-2'
+                    type="number"
+                    min={0} max={7}
+                    value={componentList.indexOf('playlist')}
+                    onChange={(e) => {updateIndices('playlist', +e.target.value)}}
+                />
+            </div>
+            <div className='flex justify-between items-center'>
+                <h2>Settings</h2>
+                <input
+                    className='pl-2'
+                    type="number"
+                    min={0} max={7}
+                    value={componentList.indexOf('settings')}
+                    onChange={(e) => {updateIndices('settings', +e.target.value)}}
+                />
+            </div>
+            <div className='flex justify-between items-center'>
+                <h2>Search</h2>
+                <input
+                    className='pl-2'
+                    type="number"
+                    min={0} max={7}
+                    value={componentList.indexOf('search')}
+                    onChange={(e) => {updateIndices('search', +e.target.value)}}
+                />
+            </div>
+            <div className='flex justify-between items-center'>
+                <h2>Lyrics</h2>
+                <input
+                    className='pl-2'
+                    type="number"
+                    min={0} max={7}
+                    value={componentList.indexOf('lyrics')}
+                    onChange={(e) => {updateIndices('lyrics', +e.target.value)}}
+                />
+            </div>
+            <div className='flex justify-between items-center'>
+                <h2>Heardle</h2>
+                <input
+                    className='pl-2'
+                    type="number"
+                    min={0} max={7}
+                    value={componentList.indexOf('heardle')}
+                    onChange={(e) => {updateIndices('heardle', +e.target.value)}}
+                />
+            </div>
+            <div className='flex justify-between items-center'>
+                <h2>Profile</h2>
+                <input
+                    className='pl-2'
+                    type="number"
+                    min={0} max={7}
+                    value={componentList.indexOf('profile')}
+                    onChange={(e) => {updateIndices('profile', +e.target.value)}}
+                />
+            </div>
+        </div>
+
         <div className="flex flex-col gap-3 p-2 rounded-lg hover:bg-eigen hover:bg-opacity-30">
             <div className="flex justify-between items-center flex-wrap gap-3">
                 <h2 className="text-lg">Player</h2>
@@ -129,7 +185,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapToGrid ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
                     <input
@@ -158,7 +214,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapToGrid ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
                     <input
@@ -206,14 +262,14 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapToGrid ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
                         value={queueData.colSpan}
-                        min={1}
+                        min={2}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "queue", value: +e.target.value}));
@@ -235,7 +291,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapToGrid ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
                     <input
@@ -283,14 +339,14 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapToGrid ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
                         value={playlistData.colSpan}
-                        min={1}
+                        min={2}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "playlist", value: +e.target.value}));
@@ -312,7 +368,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapToGrid ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
                     <input
@@ -360,7 +416,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapToGrid ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
                     <input
@@ -389,7 +445,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapToGrid ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
                     <input
@@ -437,7 +493,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapToGrid ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
                     <input
@@ -466,7 +522,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapToGrid ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
                     <input
@@ -514,7 +570,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapToGrid ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
                     <input
@@ -543,7 +599,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapToGrid ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
                     <input
@@ -591,7 +647,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapToGrid ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
                     <input
@@ -620,7 +676,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapToGrid ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
                     <input
@@ -652,14 +708,14 @@ function Settings() {
         <div className="flex flex-col gap-3 p-2 rounded-lg hover:bg-eigen hover:bg-opacity-30">
             <h2 className="text-lg">Settings</h2>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${snapToGrid ? "hidden" : "block"}`} />
                 <h2>grid span</h2>
                 <div className="flex gap-1">
                     <input
                         type="number"
                         className="w-11 rounded-lg text-center"
                         value={settingsData.colSpan}
-                        min={100}
+                        min={2}
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "settings", value: +e.target.value}));
@@ -671,7 +727,7 @@ function Settings() {
                         type="number"
                         className="w-11 rounded-lg text-center"
                         value={settingsData.rowSpan}
-                        min={100}
+                        min={2}
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "settings", value: +e.target.value}));
@@ -681,7 +737,7 @@ function Settings() {
                 </div>
             </div>
             <div className="relative flex justify-between items-center flex-wrap gap-2 p-2 rounded-lg overflow-hidden">
-                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!mode ? "hidden" : "block"}`} />
+                <div className={`absolute top-0 left-0 w-full h-full bg-eigen bg-opacity-50 ${!snapToGrid ? "hidden" : "block"}`} />
                 <h2>width/height</h2>
                 <div className="flex gap-1">
                     <input
