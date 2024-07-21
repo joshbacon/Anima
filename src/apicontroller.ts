@@ -46,7 +46,7 @@ export async function redirectToAuth() {
     const params = new URLSearchParams();
     params.append("client_id", VITE_CLIENT_ID);
     params.append("response_type", "code");
-    params.append("redirect_uri", "http://localhost:5173");
+    params.append("redirect_uri", "http://localhost:5173/dashboard");
     params.append("scope", "user-read-private user-read-email user-read-currently-playing user-modify-playback-state user-read-playback-state playlist-read-private user-top-read");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
@@ -79,6 +79,10 @@ export function signOut() {
     document.location = "http://localhost:5173";
 }
 
+export async function testAuthorization():Promise<boolean> {
+    return true;
+}
+
 
 // Player Functions
 
@@ -105,7 +109,7 @@ export async function getCurrentlyPlaying():Promise<TrackData> {
             }
             return data;
         })
-        .catch(err => {
+        .catch(() => {
             return emptyTrack;
         });
 }

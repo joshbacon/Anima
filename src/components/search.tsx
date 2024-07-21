@@ -33,7 +33,7 @@ function searchItem(data:TrackData|ArtistData|AlbumData, callback:Function) {
             </div>
         </li>
     } else if (data._type === "artist") {
-        const { id, name, images} = data as ArtistData;
+        const { id, name, images } = data as ArtistData;
         return <li key={id} className='flex gap-2 w-full p-2 cursor-pointer rounded-lg hover:bg-eigen-light hover:bg-opacity-50' onClick={() => callback(true)}>
             <img className='w-16 aspect-square' src={images[0].url} alt="album cover" />
             <div className='w-full'>
@@ -43,7 +43,7 @@ function searchItem(data:TrackData|ArtistData|AlbumData, callback:Function) {
             </div>
         </li>
     } else { // data._type === "album"
-        const { id, name, images} = data as AlbumData;
+        const { id, name, images } = data as AlbumData;
         return <li key={id} className='flex gap-2 w-full p-2 cursor-pointer rounded-lg hover:bg-eigen-light hover:bg-opacity-50' onClick={() => callback(true)}>
             <img className='w-16 aspect-square' src={images[0].url} alt="album cover" />
             <div className='w-full'>

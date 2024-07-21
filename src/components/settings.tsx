@@ -1,15 +1,11 @@
-
 // add more background options, for both cards and page itself
 // - glass cards
 // - patterns for cards
 // - picture upload for page background
 
-
-// TODO:
-// - figure out what to store in redux and bring in on load
-// -- (adding the router should hadndle any race conditions with the state)
-
 import { useSelector, useDispatch } from "react-redux";
+import { Link } from "react-router-dom";
+
 import { RootState } from "../state/store";
 import { toggleSnapToGrid, changeColor, changeOrder, toggleShowing, changeColSpan, changeRowSpan, changeWidth, changeHeight } from "../state/settingsSlice";
 
@@ -178,7 +174,7 @@ function Settings() {
                         defaultChecked={playerData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("player"));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, showing: !playerData.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playerData: {...playerData, showing: !playerData.showing}}));
                         }}
                     />
                     <label htmlFor="playerComponent" className="pl-2">Show/Hide</label>
@@ -196,7 +192,7 @@ function Settings() {
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "player", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playerData: {...playerData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -208,7 +204,7 @@ function Settings() {
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "player", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playerData: {...playerData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -225,7 +221,7 @@ function Settings() {
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "player", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playerData: {...playerData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -237,7 +233,7 @@ function Settings() {
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "player", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, player: {...playerData, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playerData: {...playerData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -255,7 +251,7 @@ function Settings() {
                         defaultChecked={queueData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("queue"));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, showing: !queueData.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queueData: {...queueData, showing: !queueData.showing}}));
                         }}
                     />
                     <label htmlFor="queueComponent" className="pl-2">Show/Hide</label>
@@ -273,7 +269,7 @@ function Settings() {
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "queue", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queueData: {...queueData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -285,7 +281,7 @@ function Settings() {
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "queue", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queueData: {...queueData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -302,7 +298,7 @@ function Settings() {
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "queue", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queueData: {...queueData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -314,7 +310,7 @@ function Settings() {
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "queue", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, queue: {...queueData, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, queueData: {...queueData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -332,7 +328,7 @@ function Settings() {
                         defaultChecked={playlistData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("playlist"));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, showing: !playlistData.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlistData: {...playlistData, showing: !playlistData.showing}}));
                         }}
                     />
                     <label htmlFor="playlistComponent" className="pl-2">Show/Hide</label>
@@ -350,7 +346,7 @@ function Settings() {
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "playlist", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlistData: {...playlistData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -362,7 +358,7 @@ function Settings() {
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "playlist", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlistData: {...playlistData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -379,7 +375,7 @@ function Settings() {
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "playlist", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlistData: {...playlistData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -391,7 +387,7 @@ function Settings() {
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "playlist", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, playlist: {...playlistData, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, playlistData: {...playlistData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -409,7 +405,7 @@ function Settings() {
                         defaultChecked={searchData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("search"));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, showing: !searchData.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, searchData: {...searchData, showing: !searchData.showing}}));
                         }}
                     />
                     <label htmlFor="searchComponent" className="pl-2">Show/Hide</label>
@@ -427,7 +423,7 @@ function Settings() {
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "search", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, searchData: {...searchData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -439,7 +435,7 @@ function Settings() {
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "search", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, searchData: {...searchData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -456,7 +452,7 @@ function Settings() {
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "search", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, searchData: {...searchData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -468,7 +464,7 @@ function Settings() {
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "search", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, search: {...searchData, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, searchData: {...searchData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -486,7 +482,7 @@ function Settings() {
                         defaultChecked={lyricsData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("lyrics"));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, showing: !lyricsData.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyricsData: {...lyricsData, showing: !lyricsData.showing}}));
                         }}
                     />
                     <label htmlFor="lyricsComponent" className="pl-2">Show/Hide</label>
@@ -504,7 +500,7 @@ function Settings() {
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "lyrics", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyricsData: {...lyricsData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -516,7 +512,7 @@ function Settings() {
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "lyrics", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyricsData: {...lyricsData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -533,7 +529,7 @@ function Settings() {
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "lyrics", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyricsData: {...lyricsData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -545,7 +541,7 @@ function Settings() {
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "lyrics", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, lyrics: {...lyricsData, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, lyricsData: {...lyricsData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -563,7 +559,7 @@ function Settings() {
                         defaultChecked={heardleData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("heardle"));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, showing: !heardleData.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardleData: {...heardleData, showing: !heardleData.showing}}));
                         }}
                     />
                     <label htmlFor="heardleComponent" className="pl-2">Show/Hide</label>
@@ -581,7 +577,7 @@ function Settings() {
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "heardle", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardleData: {...heardleData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -593,7 +589,7 @@ function Settings() {
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "heardle", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardleData: {...heardleData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -610,7 +606,7 @@ function Settings() {
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "heardle", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardleData: {...heardleData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -622,7 +618,7 @@ function Settings() {
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "heardle", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, heardle: {...heardleData, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, heardleData: {...heardleData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -640,7 +636,7 @@ function Settings() {
                         defaultChecked={profileData.showing}
                         onChange={() => {
                             dispatch(toggleShowing("profile"));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, showing: !profileData.showing}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profileData: {...profileData, showing: !profileData.showing}}));
                         }}
                     />
                     <label htmlFor="profileComponent" className="pl-2">Show/Hide</label>
@@ -658,7 +654,7 @@ function Settings() {
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "profile", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profileData: {...profileData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -670,7 +666,7 @@ function Settings() {
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "profile", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profileData: {...profileData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -687,7 +683,7 @@ function Settings() {
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "profile", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profileData: {...profileData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -699,7 +695,7 @@ function Settings() {
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "profile", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, profile: {...profileData, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, profileData: {...profileData, height: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -719,7 +715,7 @@ function Settings() {
                         title="columns"
                         onChange={(e) => {
                             dispatch(changeColSpan({id: "settings", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settingsData, colSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, settingsData: {...settingsData, colSpan: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -731,7 +727,7 @@ function Settings() {
                         title="rows"
                         onChange={(e) => {
                             dispatch(changeRowSpan({id: "settings", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settingsData, rowSpan: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, settingsData: {...settingsData, rowSpan: +e.target.value}}));
                         }}
                     />
                 </div>
@@ -748,7 +744,7 @@ function Settings() {
                         title="width"
                         onChange={(e) => {
                             dispatch(changeWidth({id: "settings", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settingsData, width: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, settingsData: {...settingsData, width: +e.target.value}}));
                         }}
                     />
                     <h2>x</h2>
@@ -760,12 +756,16 @@ function Settings() {
                         title="height"
                         onChange={(e) => {
                             dispatch(changeHeight({id: "settings", value: +e.target.value}));
-                            localStorage.setItem('settings', JSON.stringify({...state, settings: {...settingsData, height: +e.target.value}}));
+                            localStorage.setItem('settings', JSON.stringify({...state, settingsData: {...settingsData, height: +e.target.value}}));
                         }}
                     />
                 </div>
             </div>
         </div>
+
+        <Link to="/feedback" className={`w-full h-full px-3 py-2 text-lg font-semibold bg-${color}-600 rounded-md`}>
+            <h1 className="text-xl font-semibold text-center">Leave Feedback</h1>
+        </Link>
         
         <div className="flex justify-center items-center gap-2 w-full text-center">
             <button

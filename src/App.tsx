@@ -1,88 +1,46 @@
 import { useEffect, useState } from 'react';
+import { BrowserRouter, Route, Routes, Navigate } from 'react-router-dom';
 
-import { setToken } from './apicontroller';
+import { setToken, testAuthorization } from './apicontroller';
 
-import { useSelector } from "react-redux";
-import { RootState } from "./state/store";
-
-import Player from './components/player';
-import Queue from './components/queue';
-import Playlist from './components/playlist';
-import Search from './components/search';
-import Lyrics from './components/lyrics';
-import Heardle from './components/heardle';
-import Settings from './components/settings';
-import Profile from './components/profile';
-import SignIn from './components/signin';
-
-
-interface Component {
-  id: string,
-  index: number,
-  component: JSX.Element,
-}
-
-//  TODO:
-// - add a router
-// - have a sign in page that refreshes the token if already logged in and
-//    does all the api calls and dispatches initial state into the store
-// -- if a call fails (some 400 message) after token refresh have them resign in
-// -- only navigate after setting store, should fix issues where store updates but components don't
-// - also have a route for a feedback form
+import SignIn from './pages/signin';
+import Dashboard from './pages/dashboard';
+import Feedback from './pages/feedback';
+import { loadSettings } from './state/settingsSlice';
 
 function App() {
 
-  const { snapToGrid, componentList } = useSelector((state: RootState) => state.settings);
-
-  const [signedIn, setSignedIn] = useState<boolean>(false);
-
+  // Load in potentially existing settings, then
+  // see if they have already logged in and either refresh the token or go to the sign in page accordingly
   useEffect(() => {
-    // Show the dashboard if they are already signed in and have a token
-    if (localStorage.getItem('token')){
-      // looks like the token expires so look into reloading it before setting signedIn
-      setSignedIn(true);
-    } else {
-      // Else check for the redirect code and set the token
-      const params = new URLSearchParams(window.location.search);
-      const code = params.get("code");
-      if (code) {
-        setToken().then(() => {
-          setSignedIn(true);
+    loadSettings().then(() => {
+      const signedIn:string|null = localStorage.getItem('token') && localStorage.getItem('code') && localStorage.getItem('verifier');
+      if (!signedIn) {
+        testAuthorization().then(authorized => {
+          if (authorized) <Navigate to="/dashboard" />;
+          else {
+            // TODO: refresh the token
+            // - https://developer.spotify.com/documentation/web-api/tutorials/refreshing-tokens
+            if (true) { // token refresh worked, so navigate to dashboard
+              <Navigate to="/dashboard" />;
+            } else { // token refresh didn't work, so go to signIn
+
+            }
+          }
         });
       }
-    }
+    });
   }, []);
 
-  return <div
-    className={
-      `w-screen h-screen overflow-auto p-3 font-main ` +
-      ( snapToGrid ? 'grid place-items-center gap-3 grid-cols-[repeat(auto-fit,minmax(150px,1fr))] auto-rows-[144px]' : '')
-    }
-  >
-    { !signedIn ?
-      <SignIn /> :
-      componentList.map(id => {
-        switch(id) {
-          case 'player':
-            return <Player />;
-          case 'queue':
-            return <Queue />;
-          case 'playlist':
-            return <Playlist />;
-          case 'settings':
-            return <Settings />;
-          case 'search':
-            return <Search />;
-          case 'lyrics':
-            return <Lyrics />;
-          case 'heardle':
-            return <Heardle />;
-          case 'profile':
-            return <Profile />;
-        }
-      })
-    }
-  </div>
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route index element={<SignIn />}/>
+        <Route path="dashboard" element={<Dashboard />} />
+        <Route path="feedback" element={<Feedback />} />
+      </Routes>
+    </BrowserRouter>
+  )
 }
 
 export default App

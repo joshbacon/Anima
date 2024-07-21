@@ -5,6 +5,9 @@ import play from '../assets/play.svg';
 import right from '../assets/right.svg';
 import wrong from '../assets/wrong.svg';
 
+// TODO:
+// - add a stats button (shows the total games played, how many guess it took you each time (like a bar graph), an average number of guesses)
+
 // make this a child of the draggable class
 function Heardle() {
     
