@@ -46,7 +46,7 @@ export async function redirectToAuth() {
     const params = new URLSearchParams();
     params.append("client_id", VITE_CLIENT_ID);
     params.append("response_type", "code");
-    params.append("redirect_uri", "http://localhost:5173/dashboard");
+    params.append("redirect_uri", "http://localhost:5173");
     params.append("scope", "user-read-private user-read-email user-read-currently-playing user-modify-playback-state user-read-playback-state playlist-read-private user-top-read");
     params.append("code_challenge_method", "S256");
     params.append("code_challenge", challenge);
@@ -73,14 +73,29 @@ async function generateCodeChallenge(codeVerifier:string) {
         .replace(/=+$/, '');
 }
 
+export async function refreshToken():Promise<boolean> {
+    console.log("getting refresh token")
+    const response = await axios.post('https://accounts.spotify.com/api/token', {
+        'client_id': VITE_CLIENT_ID,
+        'grant_type': 'refresh_token',
+        'refresh_token': localStorage.getItem('token'),
+    }, {
+        headers: {
+            "Content-Type": 'application/x-www-form-urlencoded',
+        },
+    })
+    console.log(response)
+    return false;
+}
+
+export async function testAuthorization():Promise<boolean> {
+    return (await getProfile()).length > 0;
+}
+
 export function signOut() {
     // clear the local storage and the SignIn component will come right back up
     localStorage.clear();
     document.location = "http://localhost:5173";
-}
-
-export async function testAuthorization():Promise<boolean> {
-    return true;
 }
 
 
@@ -255,6 +270,7 @@ export async function getProfile():Promise<string> {
         .catch(err => {
             // for error handling, return this and check for it in profile component
             console.log(err);
+            return "";
         });
 }
 

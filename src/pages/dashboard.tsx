@@ -12,8 +12,10 @@ import Profile from '../components/profile';
 
 
 function Dashboard() {
-  const { snapToGrid, componentList } = useSelector((state: RootState) => state.settings);
-  return <div
+
+    const { snapToGrid, componentList } = useSelector((state: RootState) => state.settings);
+
+    return <div
         className={
         `w-screen h-screen overflow-auto p-3 font-main ` +
         ( snapToGrid ? 'grid place-items-center gap-3 grid-cols-[repeat(auto-fit,minmax(150px,1fr))] auto-rows-[144px]' : '')

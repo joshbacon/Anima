@@ -1,11 +1,57 @@
 import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { setToken, redirectToAuth } from '../apicontroller';
 
-import { redirectToAuth } from '../apicontroller';
-
-import { useDispatch } from "react-redux";
-import { toggleSnapToGrid, changeColor, setListOrder, toggleShowing, changeColSpan, changeRowSpan, changeWidth, changeHeight } from "../state/settingsSlice";
+import { loadSettings, SettingsState } from '../state/settingsSlice';
+import { testAuthorization, refreshToken } from '../apicontroller';
 
 function SignIn() {
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    function pullSettings() {
+        const savedSettings = JSON.parse(localStorage.getItem('settings')!);
+        if (savedSettings) {
+            dispatch(loadSettings(savedSettings as SettingsState));
+        }
+    }
+
+    function passSignIn() {
+        navigate("/dashboard");
+    }
+
+    // Load in potentially existing settings, then
+    // see if they have already logged in and either refresh the token or go to the sign in page accordingly
+    useEffect(() => {
+        pullSettings();
+        const returnUser:string|null = localStorage.getItem('token') && localStorage.getItem('code') && localStorage.getItem('verifier');
+        if (returnUser) {
+            console.log("in here")
+            testAuthorization().then(authorized => {
+                if (authorized) {
+                    passSignIn();
+                } else {
+                    refreshToken().then(response => {
+                        if (response) { // token refresh worked, so navigate to dashboard
+                            passSignIn();
+                        } // else, token refresh didn't work, so they need to sign in again
+                    })
+                }
+            });
+        } else {
+            const params = new URLSearchParams(window.location.search);
+            const code = params.get("code");
+            if (code) {
+                setToken().then(() => {
+                    testAuthorization().then(authorized => {
+                        if (authorized) passSignIn();
+                    })
+                });
+            }
+        }
+    }, []);
 
     return <div className="w-screen h-screen bg-eigen grid place-items-center">
         <div className='z-0 absolute w-64 aspect-square rounded-full drop-shadow-circle bg-sky-500 animate-wriggle1' />

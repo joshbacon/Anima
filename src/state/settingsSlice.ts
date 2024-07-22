@@ -90,7 +90,7 @@ const initialProfile:ComponentState = {
     posY: 638
 }
 
-interface SettingsState {
+export interface SettingsState {
     snapToGrid: boolean;
     color: string;
     componentList: string[];
@@ -285,57 +285,22 @@ const settingsSlice = createSlice({
                     state.profileData.height = action.payload.value;
                     break;
             }
+        },
+        loadSettings: (state, action: PayloadAction<SettingsState>) => {
+            state.snapToGrid = action.payload.snapToGrid;
+            state.color = action.payload.color;
+            state.componentList = action.payload.componentList;
+            state.playerData = action.payload.playerData;
+            state.queueData = action.payload.queueData;
+            state.playlistData = action.payload.playlistData;
+            state.settingsData = action.payload.settingsData;
+            state.searchData = action.payload.searchData;
+            state.lyricsData = action.payload.lyricsData;
+            state.heardleData = action.payload.heardleData;
+            state.profileData = action.payload.profileData;
         }
     },
 });
-
-export async function loadSettings() {
-    const savedSettings = JSON.parse(localStorage.getItem('settings')!);
-    if (savedSettings) {
-        if (!savedSettings.snapToGrid) toggleSnapToGrid();
-        changeColor(savedSettings.color);
-        setListOrder(savedSettings.componentList);
-        if (!savedSettings.playerData.showing) toggleShowing('player');
-        if (!savedSettings.queueData.showing) toggleShowing('queue');
-        if (!savedSettings.playlistData.showing) toggleShowing('playlist');
-        if (!savedSettings.settingsData.showing) toggleShowing('settings');
-        if (!savedSettings.searchData.showing) toggleShowing('search');
-        if (!savedSettings.lyricsData.showing) toggleShowing('lyrics');
-        if (!savedSettings.heardleData.showing) toggleShowing('heardle');
-        changeColSpan({id: 'player', value: savedSettings.playerData.colSpan});
-        changeColSpan({id: 'queue', value: savedSettings.queueData.colSpan});
-        changeColSpan({id: 'playlist', value: savedSettings.playlistData.colSpan});
-        changeColSpan({id: 'settings', value: savedSettings.settingsData.colSpan});
-        changeColSpan({id: 'search', value: savedSettings.searchData.colSpan});
-        changeColSpan({id: 'lyrics', value: savedSettings.lyricsData.colSpan});
-        changeColSpan({id: 'heardle', value: savedSettings.heardleData.colSpan});
-        changeColSpan({id: 'profile', value: savedSettings.profileData.colSpan});
-        changeRowSpan({id: 'player', value: savedSettings.playerData.rowSpan});
-        changeRowSpan({id: 'queue', value: savedSettings.queueData.rowSpan});
-        changeRowSpan({id: 'playlist', value: savedSettings.playlistData.rowSpan});
-        changeRowSpan({id: 'settings', value: savedSettings.settingsData.rowSpan});
-        changeRowSpan({id: 'search', value: savedSettings.searchData.rowSpan});
-        changeRowSpan({id: 'lyrics', value: savedSettings.lyricsData.rowSpan});
-        changeRowSpan({id: 'heardle', value: savedSettings.heardleData.rowSpan});
-        changeRowSpan({id: 'profile', value: savedSettings.profileData.rowSpan});
-        changeWidth({id: 'player', value: savedSettings.playerData.width});
-        changeWidth({id: 'queue', value: savedSettings.queueData.width});
-        changeWidth({id: 'playlist', value: savedSettings.playlistData.width});
-        changeWidth({id: 'settings', value: savedSettings.settingsData.width});
-        changeWidth({id: 'search', value: savedSettings.searchData.width});
-        changeWidth({id: 'lyrics', value: savedSettings.lyricsData.width});
-        changeWidth({id: 'heardle', value: savedSettings.heardleData.width});
-        changeWidth({id: 'profile', value: savedSettings.profileData.width});
-        changeHeight({id: 'player', value: savedSettings.playerData.height});
-        changeHeight({id: 'queue', value: savedSettings.queueData.height});
-        changeHeight({id: 'playlist', value: savedSettings.playlistData.height});
-        changeHeight({id: 'settings', value: savedSettings.settingsData.height});
-        changeHeight({id: 'search', value: savedSettings.searchData.height});
-        changeHeight({id: 'lyrics', value: savedSettings.lyricsData.height});
-        changeHeight({id: 'heardle', value: savedSettings.heardleData.height});
-        changeHeight({id: 'profile', value: savedSettings.profileData.height});
-    }
-}
 
 export const {
     toggleSnapToGrid,
@@ -347,6 +312,7 @@ export const {
     changeRowSpan,
     changeWidth,
     changeHeight,
+    loadSettings,
 } = settingsSlice.actions;
 
 export default settingsSlice.reducer;
