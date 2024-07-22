@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TrackData, ImageData } from './interfaces';
 
 
-interface QueueList {
+export interface QueueList {
     queue: TrackData[];
 }
 

@@ -2,7 +2,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { TrackData, ArtistData } from './interfaces';
 
-interface ProfileState {
+export interface ProfileState {
     username: string,
     topArtists: ArtistData[],
     topTracks: TrackData[],

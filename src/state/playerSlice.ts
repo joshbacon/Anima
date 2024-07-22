@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TrackData, emptyTrack } from './interfaces';
 
 
-interface PlayerData {
+export interface PlayerData {
     track: TrackData;
 }
 

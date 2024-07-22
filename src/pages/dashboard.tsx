@@ -1,5 +1,8 @@
+import { useEffect } from "react";
 import { useSelector } from "react-redux";
 import { RootState } from "../state/store";
+import { useDispatch } from 'react-redux';
+import { loadSettings, SettingsState } from '../state/settingsSlice';
 
 import Player from '../components/player';
 import Queue from '../components/queue';
@@ -13,7 +16,15 @@ import Profile from '../components/profile';
 
 function Dashboard() {
 
+    const dispatch = useDispatch();
     const { snapToGrid, componentList } = useSelector((state: RootState) => state.settings);
+
+    useEffect(() => {
+        const savedSettings = JSON.parse(localStorage.getItem('settings')!);
+        if (savedSettings) {
+            dispatch(loadSettings(savedSettings as SettingsState));
+        }
+    }, []);
 
     return <div
         className={

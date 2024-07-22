@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { setToken, redirectToAuth } from '../apicontroller';
@@ -26,10 +26,9 @@ function SignIn() {
     // see if they have already logged in and either refresh the token or go to the sign in page accordingly
     useEffect(() => {
         pullSettings();
-        const returnUser:string|null = localStorage.getItem('token') && localStorage.getItem('code') && localStorage.getItem('verifier');
+        const returnUser:string|null = localStorage.getItem('access_token');
         if (returnUser) {
-            console.log("in here")
-            testAuthorization().then(authorized => {
+            testAuthorization(returnUser).then(authorized => {
                 if (authorized) {
                     passSignIn();
                 } else {
@@ -45,7 +44,7 @@ function SignIn() {
             const code = params.get("code");
             if (code) {
                 setToken().then(() => {
-                    testAuthorization().then(authorized => {
+                    testAuthorization(localStorage.getItem('access_token')??"").then(authorized => {
                         if (authorized) passSignIn();
                     })
                 });

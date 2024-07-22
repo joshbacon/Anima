@@ -5,20 +5,25 @@
 
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { useNavigate } from 'react-router-dom';
 
 import { RootState } from "../state/store";
 import { toggleSnapToGrid, changeColor, changeOrder, toggleShowing, changeColSpan, changeRowSpan, changeWidth, changeHeight } from "../state/settingsSlice";
-
-import { signOut } from "../apicontroller";
 
 function Settings() {
 
     const state = useSelector((state: RootState) => state.settings);
     const { snapToGrid, color, componentList, playerData, queueData, playlistData, settingsData, searchData, lyricsData, heardleData, profileData } = state;
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     function updateIndices(id:string, to:number) {
         dispatch(changeOrder({id, to}));
+    }
+
+    function signOut() {
+        localStorage.clear();
+        navigate("/");
     }
 
     return <div

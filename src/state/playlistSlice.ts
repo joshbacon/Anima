@@ -3,7 +3,7 @@ import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { TrackData, PlaylistData, ImageData } from './interfaces';
 
 
-interface PlaylistList {
+export interface PlaylistList {
     playlists: PlaylistData[];
 }
 

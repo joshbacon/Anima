@@ -22,7 +22,7 @@ export async function setToken() {
 
     let authToken = Buffer.from(`${VITE_CLIENT_ID}:${VITE_SECRET}`, 'utf-8').toString('base64');
 
-    const response = await axios.post('https://accounts.spotify.com/api/token', {
+    axios.post('https://accounts.spotify.com/api/token', {
         'client_id': VITE_CLIENT_ID,
         'grant_type': 'authorization_code',
         'code': code,
@@ -33,8 +33,10 @@ export async function setToken() {
             "Authorization": `Basic ${authToken}`,
             "Content-Type": 'application/x-www-form-urlencoded',
         },
-    })
-    localStorage.setItem('token', response.data.access_token);
+    }).then(res => {
+        localStorage.setItem('access_token', res.data.access_token);
+        localStorage.setItem('refresh_token', res.data.refresh_token);
+    });
 }
 
 export async function redirectToAuth() {
@@ -74,28 +76,32 @@ async function generateCodeChallenge(codeVerifier:string) {
 }
 
 export async function refreshToken():Promise<boolean> {
-    console.log("getting refresh token")
-    const response = await axios.post('https://accounts.spotify.com/api/token', {
+    // ok, when the access token loses authorization
+    // this will run and reset the tokens...
+    // but it gives a 400 (Bad Request) response and the state needs to be 
+    axios.post('https://accounts.spotify.com/api/token', {
         'client_id': VITE_CLIENT_ID,
         'grant_type': 'refresh_token',
-        'refresh_token': localStorage.getItem('token'),
+        'refresh_token': localStorage.getItem('refresh_token'),
     }, {
         headers: {
             "Content-Type": 'application/x-www-form-urlencoded',
         },
-    })
-    console.log(response)
+    }).then(res => {
+        localStorage.setItem('access_token', res.data.access_token)
+        localStorage.setItem('refresh_token', res.data.refresh_token)
+        return testAuthorization(res.data.access_token);
+    });
     return false;
 }
 
-export async function testAuthorization():Promise<boolean> {
-    return (await getProfile()).length > 0;
-}
-
-export function signOut() {
-    // clear the local storage and the SignIn component will come right back up
-    localStorage.clear();
-    document.location = "http://localhost:5173";
+export async function testAuthorization(token:string):Promise<boolean> {
+    axios.get("https://api.spotify.com/v1/me", {
+        headers: { Authorization: `Bearer ${token}` }
+    }).then(res => {
+        return res.data.display_name.length > 0;
+    });
+    return false;
 }
 
 
@@ -103,7 +109,7 @@ export function signOut() {
 
 export async function getCurrentlyPlaying():Promise<TrackData> {
     return axios.get("https://api.spotify.com/v1/me/player/currently-playing", {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
     })
         .then(res => {
             let { id, name, artists, album, explicit } = res.data.item;
@@ -131,13 +137,13 @@ export async function getCurrentlyPlaying():Promise<TrackData> {
 
 export async function previousSong() {
     axios.get("https://api.spotify.com/v1/me/player/previous", {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
     });
 }
 
 export async function nextSong() {
     axios.get("https://api.spotify.com/v1/me/player/next", {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
     });
 }
 
@@ -146,7 +152,7 @@ export async function nextSong() {
 
 export async function getPlaylists():Promise<PlaylistData[]> {
     return axios.get("https://api.spotify.com/v1/me/playlists", {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
     })
         .then(res => {
             return res.data.items.map((playlist: any) => {
@@ -170,7 +176,7 @@ export async function getPlaylists():Promise<PlaylistData[]> {
 
 export async function getQueue():Promise<TrackData[]> {
     return axios.get("https://api.spotify.com/v1/me/player/queue", {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
     })
         .then(res => {
             return res.data.queue.map((track: any) => {
@@ -200,7 +206,7 @@ export async function getQueue():Promise<TrackData[]> {
 
 export async function search(filter:string, query:string):Promise<(TrackData|ArtistData|AlbumData)[]> {
     return axios.get(`https://api.spotify.com/v1/search?q=${query}&type=${filter}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
     })
         .then(res => {
             if (filter === "track") {
@@ -262,7 +268,7 @@ export async function search(filter:string, query:string):Promise<(TrackData|Art
 
 export async function getProfile():Promise<string> {
     return axios.get("https://api.spotify.com/v1/me", {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
     })
         .then(res => {
             return res.data.display_name;
@@ -276,7 +282,7 @@ export async function getProfile():Promise<string> {
 
 export async function getTopArtists(range:string):Promise<ArtistData[]> {
     return axios.get(`https://api.spotify.com/v1/me/top/artists?time_range=${range}&limit=3`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
     })
         .then(res => {
             return res.data.items.map((artist: any) => {
@@ -296,7 +302,7 @@ export async function getTopArtists(range:string):Promise<ArtistData[]> {
 
 export async function getTopTracks(range:string):Promise<TrackData[]> {
     return axios.get(`https://api.spotify.com/v1/me/top/tracks?time_range=${range}`, {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
+        headers: { Authorization: `Bearer ${localStorage.getItem('access_token')}` }
     })
         .then(res => {
             return res.data.items.map((track: any) => {
